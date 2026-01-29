@@ -1,27 +1,83 @@
- {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
- {% endblock %}
+{% block stylesheets %}
+    {{ encore_entry_link_tags('app') }}
+    <style>
+        body {
+            background: #f5f6fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .screen {
+            background: #fff;
+            padding: 40px 35px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            width: 400px;
+            margin: 50px auto;
+        }
+        .switch-btn {
+            margin: 0 5px;
+        }
+        .login_submit {
+            width: 100%;
+            margin-top: 15px;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
-    <h2 class="title-login">Login</h2>
-    <div class="container">
-        <div class="screen">
-            <div class="screen__content">
-                <form class="login">
-                    <div class="login_field">
-                        <input type="text" class="login_input" placeholder="Email ✉️">
-                    </div>
-                    <div class="login_field">
-                        <input type="password" class="login_input" placeholder="Password 🔒">
-                    </div>
-                    <button class="button login_submit">
-                        Login
-                    </button>
-                </form>
-            </div>
-            <div class="screen__background">
-                <span class="screen_background_shape screen_background_shape3"></span>
-                <span class="screen_background_shape screen_background_shape1"></span>
-            </div>
+    <div class="screen">
+        <h2 class="text-center mb-4">Login</h2>
+
+        <div class="text-center mb-4">
+            <button id="studentBtn" class="btn btn-outline-primary switch-btn active">Étudiant</button>
+            <button id="teacherBtn" class="btn btn-outline-secondary switch-btn">Professeur</button>
         </div>
+
+        <form id="studentForm">
+            <div class="mb-3">
+                <input type="email" class="form-control" placeholder="Email ✉️">
+            </div>
+            <div class="mb-3">
+                <input type="password" class="form-control" placeholder="Password 🔒">
+            </div>
+            <button class="btn btn-primary login_submit" type="submit">Login Étudiant</button>
+        </form>
+
+
+        <form id="teacherForm" class="d-none">
+            <div class="mb-3">
+                <input type="email" class="form-control" placeholder="Email ✉️">
+            </div>
+            <div class="mb-3">
+                <input type="password" class="form-control" placeholder="Password 🔒">
+            </div>
+            <button class="btn btn-primary login_submit" type="submit">Login Professeur</button>
+        </form>
+
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
+    <script>
+        const studentBtn = document.getElementById('studentBtn');
+        const teacherBtn = document.getElementById('teacherBtn');
+        const studentForm = document.getElementById('studentForm');
+        const teacherForm = document.getElementById('teacherForm');
+
+        studentBtn.addEventListener('click', () => {
+            studentForm.classList.remove('d-none');
+            teacherForm.classList.add('d-none');
+
+            studentBtn.classList.add('active');
+            teacherBtn.classList.remove('active');
+        });
+
+        teacherBtn.addEventListener('click', () => {
+            teacherForm.classList.remove('d-none');
+            studentForm.classList.add('d-none');
+
+            teacherBtn.classList.add('active');
+            studentBtn.classList.remove('active');
+        });
+    </script>
 {% endblock %}

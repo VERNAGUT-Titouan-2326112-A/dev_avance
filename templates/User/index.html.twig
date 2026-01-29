@@ -3,9 +3,28 @@
 {% block title %}Accueil{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <h1 class="title-home">Bienvenue sur notre site !</h1>
-        <p class="description-home">Explorez nos fonctionnalités et profitez de nos services.</p>
-        <a href="{{ path('login') }}" class="btn btn-primary">Se connecter</a>
+        <div class="header-home text-center bg-primary" style="padding: 20px; color: white; margin-top: 20px;">
+            <h1>
+                Plateforme d'Apprentissage Moderne
+            </h1>
+            <p class="text-center">
+                Accédez à vos cours, regardez des vidéos, consultez des documents et passez des QCM générés par IA
+            </p>
+        </div>
+    <div class="header-home text-center bg-white" style="padding: 20px; color: #000000; margin-top: 20px;">
+            <h1>
+                Video/QCM:
+            </h1>
+           <div class="d-flex justify-content-center gap-3 bg-gradient p-4 rounded">
+                <a  class="btn btn-outline-primary btn-lg">Voir les Vidéos</a>
+                <a  class="btn btn-outline-primary btn-lg">Passer les QCM</a>
+
+           </div>
+        </div>
+    <div class="header-home text-center bg-primary" style="padding: 20px; color: white; margin-top: 20px;">
+        <h1>
+            Note
+        </h1>
+        <button class="btn btn-outline-light btn-lg">Voir les Notes</button>
     </div>
 {% endblock %}
