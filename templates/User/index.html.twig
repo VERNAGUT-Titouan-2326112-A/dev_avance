@@ -5,7 +5,23 @@
 {% block body %}
     <div class="container">
         <h1 class="title-home">Bienvenue sur notre site !</h1>
-        <p class="description-home">Explorez nos fonctionnalités et profitez de nos services.</p>
-        <a href="{{ path('login') }}" class="btn btn-primary">Se connecter</a>
+
+        {# VERIFICATION : Si l'utilisateur est connecté #}
+        {% if app.user %}
+            <div class="alert alert-success">
+                {# On affiche le nom de l'utilisateur #}
+                Tu es connecté en tant que : <strong>{{ app.user.email }}</strong>
+            </div>
+
+            {# On affiche le bouton DÉCONNEXION #}
+            <a href="{{ path('app_logout') }}" class="btn btn-danger">Se déconnecter</a>
+
+            {# SINON (c'est un visiteur) #}
+        {% else %}
+            <p class="description-home">Explorez nos fonctionnalités.</p>
+            {# On affiche le bouton CONNEXION #}
+            <a href="{{ path('app_login') }}" class="btn btn-primary">Se connecter</a>
+        {% endif %}
+
     </div>
 {% endblock %}
