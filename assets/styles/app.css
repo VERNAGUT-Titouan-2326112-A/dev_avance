@@ -1,6 +1,6 @@
 
 body {
-    background: linear-gradient(90deg, #C7C5F4, #676667);
+    background-color: #ffffff;
 }
 .title-login{
     margin-top: 5%;
@@ -27,7 +27,7 @@ body {
     border-radius: 25px;
 }
 
-.screen__content {
+.screen_content {
     z-index: 1;
     position: relative;
     height: 100%;
@@ -127,21 +127,11 @@ body {
     color: #fff;
 }
 .header{
-    background-color: #aaaaaa;
+    background-color: #d6d6d6;
     text-align: center;
-    color: #261f51;
     font-family: 'Arial', sans-serif;
     padding: 10px 0;
 }
-.nav-to-header
-{
-    background-color: #b8b8b8;
-    text-align: center;
-    color: #261f51;
-    font-family: 'Arial', sans-serif;
-    padding: 10px 0;
-}
-
 
 .timetable {
     width: 100%;
