@@ -1,11 +1,11 @@
 
 body {
-    background: linear-gradient(90deg, #C7C5F4, #776BCC);
+    background: linear-gradient(90deg, #C7C5F4, #676667);
 }
 .title-login{
     margin-top: 5%;
     text-align: center;
-    color: #261f51;
+    color: #1e05f3;
     font-family: 'Arial', sans-serif;
 }
 
@@ -19,11 +19,12 @@ body {
 }
 
 .screen {
-    background: linear-gradient(90deg, #5D54A4, #7C78B8);
+    background: linear-gradient(90deg, #919191, #e8e8e8);
     position: relative;
     height: 600px;
     width: 360px;
-    box-shadow: 0px 0px 24px #5C5696;
+    box-shadow: 0px 0px 24px #292929;
+    border-radius: 25px;
 }
 
 .screen__content {
@@ -59,7 +60,7 @@ body {
 .screen_background_shape3 {
     height: 540px;
     width: 190px;
-    background: linear-gradient(270deg, #5D54A4, #6A679E);
+    background: linear-gradient(270deg, #d5d5d5, #2a1be4);
     top: -24px;
     right: 0;
     border-radius: 32px;
@@ -90,7 +91,7 @@ body {
 .login__input:focus,
 .login__input:hover {
     outline: none;
-    border-bottom-color: #6A679E;
+    border-bottom-color: #222222;
 }
 
 .login_submit {
@@ -103,8 +104,8 @@ body {
     text-transform: uppercase;
     font-weight: 700;
     width: 100%;
-    color: #4C489D;
-    box-shadow: 0px 2px 2px #5C5696;
+    color: #130ad3;
+    box-shadow: 0px 2px 2px #3a3a3a;
     cursor: pointer;
     transition: .2s;
 }
@@ -112,7 +113,7 @@ body {
 .login__submit:active,
 .login__submit:focus,
 .login__submit:hover {
-    border-color: #6A679E;
+    border-color: #3a3a3a;
     outline: none;
 }
 
@@ -126,7 +127,7 @@ body {
     color: #fff;
 }
 .header{
-    background-color: #8c69c1;
+    background-color: #aaaaaa;
     text-align: center;
     color: #261f51;
     font-family: 'Arial', sans-serif;
@@ -134,7 +135,7 @@ body {
 }
 .nav-to-header
 {
-    background-color: #b39ddb;
+    background-color: #b8b8b8;
     text-align: center;
     color: #261f51;
     font-family: 'Arial', sans-serif;
