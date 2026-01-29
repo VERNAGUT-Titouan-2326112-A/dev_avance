@@ -5,7 +5,7 @@
     <h2 class="title-login">Login</h2>
     <div class="container">
         <div class="screen">
-            <div class="screen__content">
+            <div class="screen_content">
                 <form class="login">
                     <div class="login_field">
                         <input type="text" class="login_input" placeholder="Email ✉️">
@@ -13,9 +13,12 @@
                     <div class="login_field">
                         <input type="password" class="login_input" placeholder="Password 🔒">
                     </div>
-                    <button class="button login_submit">
+                    <button class="login_submit" type="submit">
                         Login
                     </button>
+                    <p>
+                        Do you have no account ? <a href="{{ path('index') }}">Register</a>
+                    </p>
                 </form>
             </div>
             <div class="screen__background">

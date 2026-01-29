@@ -15,9 +15,8 @@
     </head>
     <body>
     <header class="header">
-        <nav class="nav-to-header">
-            <a href="{{ path('login') }}">Login</a>
-            <a href="{{ path('index') }}">Dashboard</a>
+        <nav class="nav-to-header flex-lg-nowrap">
+            <a class="btn btn-primary" style="margin-right: auto" href="{{ path('login') }}">Login</a>
         </nav>
     </header>
         {% block body %}
