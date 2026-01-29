@@ -1,0 +1,64 @@
+{% extends 'teacherBase.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+    <div class="header-home text-center bg-primary" style="padding: 20px; color: white; margin-top: 20px;">
+        <h1>
+            Plateforme d'Apprentissage Moderne
+        </h1>
+        <p class="text-center">
+            Accédez à vos cours, regardez des vidéos, consultez des documents et passez des QCM générés par IA
+        </p>
+    </div>
+    <div class="header-home text-center bg-white" style="padding: 20px; color: #000000; margin-top: 20px;">
+        <h1>Vidéo/QCM:</h1>
+
+        <div class="position-relative mt-4">
+            <button class="btn btn-outline-primary position-absolute top-50 start-0 translate-middle-y" id="prevVideoBtn" style="z-index: 10;">&#8249;</button>
+
+            <div id="videoContainerWrapper" class="position-relative">
+                <div id="videoContainer" class="d-flex overflow-hidden gap-3" style="scroll-behavior: smooth; padding: 0 50px;">
+                    {% for i in 1..10 %}
+                        <div class="card locked-card position-relative" style="min-width: 250px;">
+                            <img class="card-img-top" alt="Video {{ i }}" src="https://via.placeholder.com/250x150">
+                            <div class="card-body">
+                                <h5 class="card-title">Vidéo {{ i }}</h5>
+                            </div>
+                            <div class="overlay">
+                                <span class="lock-icon">🔒</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <button class="btn btn-outline-primary position-absolute top-50 end-0 translate-middle-y" id="nextVideoBtn" style="z-index: 10;">&#8250;</button>
+        </div>
+    </div>
+
+    <div class="header-home text-center bg-primary" style="padding: 20px; color: white; margin-top: 20px;">
+        <h1>
+            Note
+        </h1>
+        <button class="btn btn-outline-light btn-lg">Voir les Notes</button>
+    </div>
+{% endblock %}
+{% block javascripts %}
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const videoContainer = document.getElementById('videoContainer');
+                const prevBtn = document.getElementById('prevVideoBtn');
+                const nextBtn = document.getElementById('nextVideoBtn');
+                const scrollAmount = 260;
+
+                prevBtn.addEventListener('click', () => {
+                    videoContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    videoContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                });
+            });
+        </script>
+    {% endblock %}

@@ -127,12 +127,19 @@ body {
     color: #fff;
 }
 .header{
-    background-color: #d6d6d6;
+    background-color: #ffffff;
     text-align: center;
     font-family: 'Arial', sans-serif;
     padding: 10px 0;
 }
-
+.nav-to-header{
+    text-align: center;
+    color: #261f51;
+    font-family: 'Arial', sans-serif;
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+}
 .timetable {
     width: 100%;
     border-collapse: collapse;
@@ -156,4 +163,33 @@ body {
 
 .timetable tr:hover {
     background-color: #f1f1f1;
+}
+.locked-card {
+    overflow: hidden;
+    position: relative;
+}
+
+.locked-card img,
+.locked-card .card-body {
+    filter: blur(4px);
+}
+
+.locked-card .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+}
+
+.locked-card .lock-icon {
+    font-size: 2rem;
+    color: white;
+    background: rgba(0,0,0,0.5);
+    padding: 10px;
+    border-radius: 50%;
 }

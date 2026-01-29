@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% endblock %}
+    </head>
+    <body>
+    <header class="header">
+        <nav class="nav-to-header">
+            <h5 class="p-2 mb-2 bg-primary text-white rounded" style="margin: 0 0 1% 0">
+                Modern Learning Platform 📕
+            </h5>
+            <button type="button" class="btn btn-primary" style="margin: 0 1% 0 0" data-bs-toggle="modal" data-bs-target="#manageDashboardModal">
+                Manage Dashboard ✏️
+            </button>
+            <a class="btn btn-primary" style="margin: 0 1% 0 0" href="{{ path('login') }}">DashBoard 🗓️</a>
+            <a class="btn btn-primary" style="margin: 0 1% 0 0" href="{{ path('login') }}">Login 👤</a>
+        </nav>
+    </header>
+    <div class="modal fade" id="manageDashboardModal" tabindex="-1" aria-labelledby="manageDashboardModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="manageDashboardModalLabel">Manage Dashboard</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <p>Voulez-vous vous connecter pour gérer le dashboard ?</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <a href="{{ path('login') }}" class="btn btn-primary">Se connecter</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+        {% block body %}
+        {% endblock %}
+    </body>
+</html>
