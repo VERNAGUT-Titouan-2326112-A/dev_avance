@@ -3,28 +3,36 @@
 {% block title %}Accueil{% endblock %}
 
 {% block body %}
-        <div class="header-home text-center bg-primary" style="padding: 20px; color: white; margin-top: 20px;">
-            <h1>
-                Plateforme d'Apprentissage Moderne
-            </h1>
-            <p class="text-center">
-                Accédez à vos cours, regardez des vidéos, consultez des documents et passez des QCM générés par IA
-            </p>
-        </div>
-    <div class="header-home text-center bg-white" style="padding: 20px; color: #000000; margin-top: 20px;">
+    <div class="header-home text-center bg-primary" style="padding: 20px; color: white; margin-top: 20px;">
+        <h1>
+            Plateforme d'Apprentissage Moderne
+        </h1>
+        <p class="text-center">
+            Accédez à vos cours, regardez des vidéos, consultez des documents et passez des QCM générés par IA
+        </p>
+    </div>
+    {% if app.user %}
+        <div class="header-home text-center bg-white" style="padding: 20px; color: #000000; margin-top: 20px;">
             <h1>
                 Video/QCM:
             </h1>
-           <div class="d-flex justify-content-center gap-3 bg-gradient p-4 rounded">
+            <div class="d-flex justify-content-center gap-3 bg-gradient p-4 rounded">
                 <a  class="btn btn-outline-primary btn-lg">Voir les Vidéos</a>
                 <a  class="btn btn-outline-primary btn-lg">Passer les QCM</a>
 
-           </div>
+            </div>
         </div>
-    <div class="header-home text-center bg-primary" style="padding: 20px; color: white; margin-top: 20px;">
-        <h1>
-            Note
-        </h1>
-        <button class="btn btn-outline-light btn-lg">Voir les Notes</button>
-    </div>
+        <div class="header-home text-center bg-primary" style="padding: 20px; color: white; margin-top: 20px;">
+            <h1>
+                Note
+            </h1>
+            <button class="btn btn-outline-light btn-lg">Voir les Notes</button>
+        </div>
+    {%else%}
+        <div class="header-home text-center bg-white" style="padding: 20px; color: #000000; margin-top: 20px;">
+            <p class="lead">Veuillez vous identifier pour accéder au contenu.</p>
+            {# Le bouton vital pour entrer #}
+            <a href="{{ path('app_login') }}" class="btn btn-primary btn-lg">Se connecter</a>
+        </div>
+    {%endif%}
 {% endblock %}
