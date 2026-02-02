@@ -138,6 +138,10 @@ class AppFixtures extends Fixture
                     $user = new Student();
                 } else {
                     $user = new Teacher();
+
+                    if ($faker->boolean(20)) {
+                        $user->setRoles(['ROLE_ADMIN']);
+                    }
                 }
 
                 // Génère une adresse email unique avec Faker
