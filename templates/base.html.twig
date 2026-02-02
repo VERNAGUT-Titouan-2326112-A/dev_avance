@@ -9,15 +9,17 @@
         {% endblock %}
 
         {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
     <body>
     <header class="header">
-        <nav class="nav-to-header">
-            <a href="{{ path('login') }}">Login</a>
-            <a href="{{ path('index') }}">Dashboard</a>
-        </nav>
+        {% if app.user %}
+            <a class="btn btn-danger" href="{{ path('app_logout') }}">Logout</a>
+        {% else %}
+            <a class="btn btn-primary" style="margin-right: auto" href="{{ path('app_login') }}">Login</a>
+        {% endif %}
     </header>
         {% block body %}
         {% endblock %}
