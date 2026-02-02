@@ -36,7 +36,7 @@ class AppFixtures extends Fixture
     public function fixtureForUser(ObjectManager $manager): void
     {
         for ($i = 1; $i <= 20; $i++) {
-            $faker = Factory::create('Fr_FR');
+            $faker = Factory::create('fr_FR');
 
             $user = new User();
 

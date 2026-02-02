@@ -15,4 +15,11 @@ class UserController extends AbstractController
             'controller_name' => 'UserController',
         ]);
     }
+    #[Route('/teacher', name: 'teacher')]
+    public function indexTeacher(): Response
+    {
+        return $this->render('User/Professor/index.html.twig', [
+            'controller_name' => 'UserController',
+        ]);
+    }
 }
