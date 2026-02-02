@@ -22,8 +22,8 @@
             <button type="button" class="btn btn-primary" style="margin: 0 1% 0 0" data-bs-toggle="modal" data-bs-target="#manageDashboardModal">
                 Manage Dashboard ✏️
             </button>
-            <a class="btn btn-primary" style="margin: 0 1% 0 0" href="{{ path('login') }}">DashBoard 🗓️</a>
-            <a class="btn btn-primary" style="margin: 0 1% 0 0" href="{{ path('login') }}">Login 👤</a>
+            <a class="btn btn-primary" style="margin: 0 1% 0 0" href="{{ path('app_login') }}">DashBoard 🗓️</a>
+            <a class="btn btn-primary" style="margin: 0 1% 0 0" href="{{ path('app_login') }}">Login 👤</a>
         </nav>
     </header>
     <div class="modal fade" id="manageDashboardModal" tabindex="-1" aria-labelledby="manageDashboardModalLabel" aria-hidden="true">
@@ -41,7 +41,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <a href="{{ path('login') }}" class="btn btn-primary">Se connecter</a>
+                    <a href="{{ path('app_login') }}" class="btn btn-primary">Se connecter</a>
                 </div>
 
             </div>
