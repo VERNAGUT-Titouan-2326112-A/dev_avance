@@ -1,21 +1,20 @@
 import { useState } from "react";
-import axios from "../api/axios";
+import { login } from "../api/auth";
+import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
+    const { setUser } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         try {
-            const res = await axios.post("/login", {
-                email,
-                password,
-            });
-            console.log(res.data);
-        } catch (error) {
-            console.error(error);
+            const user = await login(email, password);
+            setUser(user);
+        } catch {
+            setError("Email ou mot de passe incorrect");
         }
     };
 
@@ -25,9 +24,9 @@ export default function Login() {
                 onSubmit={handleSubmit}
                 className="bg-white p-6 rounded shadow w-96"
             >
-                <h1 className="text-2xl font-bold mb-4 text-center">
-                    Connexion Étudiant
-                </h1>
+                <h1 className="text-2xl font-bold mb-4 text-center">Connexion</h1>
+
+                {error && <p className="text-red-500 mb-3">{error}</p>}
 
                 <input
                     type="email"
