@@ -3,7 +3,8 @@
 namespace App\DataFixtures;
 
 use App\Entity\Dynamicqcm;
-use App\Entity\User;
+use App\Entity\Student;
+use App\Entity\Teacher;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -35,20 +36,25 @@ class AppFixtures extends Fixture
     }
     public function fixtureForUser(ObjectManager $manager): void
     {
+        $faker = Factory::create('fr_FR');
+
         for ($i = 1; $i <= 20; $i++) {
-            $faker = Factory::create('Fr_FR');
+            for ($i = 0; $i < 20; $i++) {
+                if ($faker->boolean()) {
+                    $user = new Student();
+                } else {
+                    $user = new Teacher();
+                }
 
-            $user = new User();
+                $user->setEmail($faker->unique()->email());
+                $user->setName($faker->firstName());
+                $user->setLastName($faker->lastName());
 
-            $user->setEmail($faker->unique()->email());
-            $user->setName($faker->firstName());
-            $user->setLastName($faker->lastName());
-            $user->setRoles(['ROLE_USER']);
+                $password = $this->hasher->hashPassword($user, 'azerty');
+                $user->setPassword($password);
 
-            $password = $this->hasher->hashPassword($user, 'azerty');
-            $user->setPassword($password);
-
-            $manager->persist($user);
+                $manager->persist($user);
+            }
         }
     }
 }
