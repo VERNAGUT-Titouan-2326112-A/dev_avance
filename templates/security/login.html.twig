@@ -45,6 +45,9 @@
 
         {# --- FORMULAIRE ÉTUDIANT --- #}
         <form id="studentForm" method="post">
+            <input type="hidden" name="_login_type" value="student">
+            <input type="hidden" name="_target_path" value="/student">
+
             <div class="mb-3">
                 <input type="email"
                        name="email"
@@ -76,6 +79,9 @@
 
         {# --- FORMULAIRE PROFESSEUR --- #}
         <form id="teacherForm" class="d-none" method="post">
+            <input type="hidden" name="_login_type" value="teacher">
+            <input type="hidden" name="_target_path" value="/teacher">
+
             <div class="mb-3">
                 <input type="email"
                        name="email"
