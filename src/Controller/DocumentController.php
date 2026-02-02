@@ -21,6 +21,7 @@ class DocumentController extends AbstractController
     #[Route('/add_pdf', name: 'add_pdf')]
     public function index(Request $request): Response
     {
+
         $file = $request->files->get('pdfFile');
         $title = $request->request->get('pdfTitle');
 

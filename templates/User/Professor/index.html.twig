@@ -55,6 +55,7 @@
                                 <div class="card-body text-center">
                                     <h5 class="card-title">{{ pdf.title }}</h5>
                                     <a href="{{ asset('uploads/pdf/' ~ pdf.path) }}" class="btn btn-outline-primary" download> Télécharger </a>
+                                    <a href="{{ asset('uploads/pdf/' ~ pdf.path) }}" class="btn btn-outline-success" target="_blank"> Lire </a>
                                 </div>
                             </div>
                         {% endfor %}
