@@ -15,8 +15,58 @@
         <h1>Vidéo/QCM:</h1>
 
         <div class="position-relative mt-4">
-            <button class="btn btn-outline-primary position-absolute top-50 start-0 translate-middle-y" id="prevVideoBtn" style="z-index: 10;">&#8249;</button>
+            <div class="text-center mt-4">
+                <button type="button" class="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#uploadPdfModal">
+                    Ajouter un document PDF
+                </button>
+            </div>
+            <div class="modal fade" id="uploadPdfModal" tabindex="-1" aria-labelledby="uploadPdfModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="{{ path('add_pdf') }}" method="post" enctype="multipart/form-data">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="uploadPdfModalLabel">Ajouter un document PDF</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="pdfFile" class="form-label">Choisir un fichier PDF</label>
+                                    <input class="form-control" type="file" id="pdfFile" name="pdfFile" accept="application/pdf" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="pdfTitle" class="form-label">Titre du document</label>
+                                    <input type="text" class="form-control" id="pdfTitle" name="pdfTitle" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                <button type="submit" class="btn btn-primary">Ajouter</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% if pdfs is not empty %}
+                <div class="header-home text-center bg-white mt-4" style="padding: 20px;">
+                    <h2>Documents PDF :</h2>
+                    <div class="d-flex flex-wrap justify-content-center gap-3 mt-3">
+                        {% for pdf in pdfs %}
+                            <div class="card" style="width: 250px;">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">{{ pdf.title }}</h5>
+                                    <a href="{{ asset('uploads/pdf/' ~ pdf.path) }}" class="btn btn-outline-primary" download> Télécharger </a>
+                                    <a href="{{ asset('uploads/pdf/' ~ pdf.path) }}" class="btn btn-outline-success" target="_blank"> Lire </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-center mt-4">Aucun document PDF disponible.</p>
+            {% endif %}
 
+
+            <button class="btn btn-outline-primary position-absolute top-50 start-0 translate-middle-y" id="prevVideoBtn" style="z-index: 10;">&#8249;</button>
             <div id="videoContainerWrapper" class="position-relative">
                 <div id="videoContainer" class="d-flex overflow-hidden gap-3" style="scroll-behavior: smooth; padding: 0 50px;">
                     {% for i in 1..10 %}
@@ -43,6 +93,8 @@
         </h1>
         <button class="btn btn-outline-light btn-lg">Voir les Notes</button>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 {% endblock %}
 {% block javascripts %}
         <script>

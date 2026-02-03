@@ -6,6 +6,7 @@ use App\Entity\Student;
 use App\Entity\Teacher;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Repository\DocumentRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,15 +40,17 @@ class SecurityController extends AbstractController
      * @var UserRepository
      */
     private UserRepository $userRepository;
+    private DocumentRepository $documentRepository;
 
     /**
      * Constructeur du SecurityController
      *
      * @param UserRepository $userRepository Référentiel pour les opérations sur les utilisateurs
      */
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, DocumentRepository $documentRepository)
     {
         $this->userRepository = $userRepository;
+        $this->documentRepository = $documentRepository;
     }
 
     /**
