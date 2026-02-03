@@ -64,26 +64,56 @@
             {% else %}
                 <p class="text-center mt-4">Aucun document PDF disponible.</p>
             {% endif %}
-
-
-            <button class="btn btn-outline-primary position-absolute top-50 start-0 translate-middle-y" id="prevVideoBtn" style="z-index: 10;">&#8249;</button>
-            <div id="videoContainerWrapper" class="position-relative">
-                <div id="videoContainer" class="d-flex overflow-hidden gap-3" style="scroll-behavior: smooth; padding: 0 50px;">
-                    {% for i in 1..10 %}
-                        <div class="card locked-card position-relative" style="min-width: 250px;">
-                            <img class="card-img-top" alt="Video {{ i }}" src="https://via.placeholder.com/250x150">
-                            <div class="card-body">
-                                <h5 class="card-title">Vidéo {{ i }}</h5>
+            <div class="header-home text-center bg-white mt-4" style="padding: 20px;">
+                <h2>Video :</h2>
+                <button type="button" class="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#uploadVideoModal">
+                    Ajouter une vidéo
+                </button>
+                {% if videos is not empty %}
+                    <div class="d-flex flex-wrap justify-content-center gap-3 mt-3">
+                        {% for video in videos %}
+                            <div class="card" style="width: 300px;">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">{{ video.title }}</h5>
+                                    <video width="100%" height="200" controls>
+                                        <source src="{{ asset('uploads/video/' ~ video.path) }}" type="video/mp4">
+                                    </video>
+                                </div>
                             </div>
-                            <div class="overlay">
-                                <span class="lock-icon">🔒</span>
-                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-center mt-4">Aucune vidéo disponible.</p>
+                {% endif %}
+                <div class="modal fade" id="uploadVideoModal" tabindex="-1" aria-labelledby="uploadVideoModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form action="{{ path('add_video') }}" method="post" enctype="multipart/form-data">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="uploadVideoModalLabel">Ajouter une video</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="videoFile" class="form-label">Choisir une video</label>
+                                        <input class="form-control" type="file" id="videoFile" name="videoFile" accept="video/*" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="videoTitle" class="form-label">Titre de la video</label>
+                                        <input type="text" class="form-control" id="videoTitle" name="videoTitle" required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                                </div>
+                            </form>
                         </div>
-                    {% endfor %}
+                    </div>
                 </div>
+
             </div>
 
-            <button class="btn btn-outline-primary position-absolute top-50 end-0 translate-middle-y" id="nextVideoBtn" style="z-index: 10;">&#8250;</button>
         </div>
     </div>
 
@@ -97,20 +127,5 @@
 
 {% endblock %}
 {% block javascripts %}
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const videoContainer = document.getElementById('videoContainer');
-                const prevBtn = document.getElementById('prevVideoBtn');
-                const nextBtn = document.getElementById('nextVideoBtn');
-                const scrollAmount = 260;
 
-                prevBtn.addEventListener('click', () => {
-                    videoContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-                });
-
-                nextBtn.addEventListener('click', () => {
-                    videoContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-                });
-            });
-        </script>
     {% endblock %}
