@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Espace Étudiant{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="alert alert-success">
+            <h1>🎓 Ça marche !</h1>
+            <p>Le fichier <code>templates/User/student/index.html.twig</code> est bien chargé.</p>
+        </div>
+
+        {# C'est ici que tu viendras brancher ton React plus tard #}
+        <div id="react-student-app"></div>
+
+        <a href="{{ path('app_logout') }}" class="btn btn-danger mt-3">Se déconnecter</a>
+    </div>
+{% endblock %}
