@@ -42,15 +42,18 @@ class RegistrationFormType extends AbstractType
                     new Assert\Length(['min' => 6, 'minMessage' => 'Votre mot de passe doit faire au moins {{ limit }} caractères']),
                 ],
             ])
-//            ->add('role', ChoiceType::class, [
-//                'label' => false,
-//                'choices' => [
-//                    'Professor' => 'ROLE_PROFESSOR',
-//                    'Student' => 'ROLE_USER',
-//                ],
-//                'expanded' => true, // radio buttons
-//                'multiple' => false,
-//            ])
+            ->add('userType', ChoiceType::class, [
+                'mapped' => false, // Important : ce n'est pas une propriété de l'entité User
+                'label' => 'Vous êtes :',
+                'choices' => [
+                    'Étudiant 🎓' => 'student',
+                    'Professeur 🧑‍🏫' => 'teacher',
+                ],
+                'expanded' => true, // Boutons radio
+                'multiple' => false,
+                'data' => 'student', // Valeur par défaut
+                'attr' => ['class' => 'd-flex justify-content-center gap-3 mb-3'], // Un peu de style
+            ])
 ;
     }
 
