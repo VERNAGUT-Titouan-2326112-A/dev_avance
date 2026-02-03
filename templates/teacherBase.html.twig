@@ -23,7 +23,11 @@
                 Manage Dashboard ✏️
             </button>
             <a class="btn btn-primary" style="margin: 0 1% 0 0" href="{{ path('app_login') }}">DashBoard 🗓️</a>
+            {% if app.user %}
+            <a class="btn btn-danger" style="margin: 0 1% 0 0" href="{{ path('app_logout') }}">Logout</a>
+            {% else %}
             <a class="btn btn-primary" style="margin: 0 1% 0 0" href="{{ path('app_login') }}">Login 👤</a>
+            {% endif %}
         </nav>
     </header>
     <div class="modal fade" id="manageDashboardModal" tabindex="-1" aria-labelledby="manageDashboardModalLabel" aria-hidden="true">
