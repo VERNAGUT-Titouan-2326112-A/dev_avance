@@ -1,4 +1,4 @@
-import api from "./axios";
+import api from "./axios.js";
 
 export const getQuiz = async (courseId) => {
     const res = await api.get(`/courses/${courseId}/quiz`);

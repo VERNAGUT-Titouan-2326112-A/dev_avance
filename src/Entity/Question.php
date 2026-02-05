@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\Delete;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  * Entité Question - Représente une question d'un QCM
@@ -20,12 +21,9 @@ use Doctrine\ORM\Mapping as ORM;
  * Une question peut avoir plusieurs réponses possibles (Answer).
  * Une seule réponse est correcte.
  *
- * Relations:
- * - ManyToOne: Appartient à un QCM
- * - OneToMany: Contient plusieurs Answer
- *
- * @package App\Entity
- * @author Équipe de Développement
+ * Groupes de sérialisation:
+ * - question:read: Utilisé pour la sérialisation (lecture) des questions
+ * - question:write: Utilisé pour la désérialisation (écriture) des questions
  */
 #[ORM\Entity(repositoryClass: QuestionRepository::class)]
 #[ApiResource(
@@ -35,7 +33,9 @@ use Doctrine\ORM\Mapping as ORM;
         new Post(description: 'Crée une nouvelle question'),
         new Put(description: 'Met à jour une question'),
         new Delete(description: 'Supprime une question'),
-    ]
+    ],
+    normalizationContext: ['groups' => ['question:read']],
+    denormalizationContext: ['groups' => ['question:write']]
 )]
 class Question
 {
@@ -45,6 +45,7 @@ class Question
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['question:read', 'question:write', 'qcm:read'])]
     private ?int $id = null;
 
     /**
@@ -52,6 +53,7 @@ class Question
      * Exemple: "Quel est la capitale de la France?"
      */
     #[ORM\Column(type: 'text')]
+    #[Groups(['question:read', 'question:write', 'qcm:read'])]
     private ?string $text = null;
 
     /**
@@ -59,6 +61,7 @@ class Question
      * Valeurs: "multiple_choice", "true_false", "short_answer"
      */
     #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['question:read', 'question:write', 'qcm:read'])]
     private ?string $type = null;
 
     /**
@@ -66,6 +69,7 @@ class Question
      * Par défaut: 1 point
      */
     #[ORM\Column(nullable: true)]
+    #[Groups(['question:read', 'question:write', 'qcm:read'])]
     private ?int $points = 1;
 
     /**
@@ -73,6 +77,7 @@ class Question
      * Permet de conserver l'ordre des questions
      */
     #[ORM\Column(nullable: true)]
+    #[Groups(['question:read', 'question:write', 'qcm:read'])]
     private ?int $orderQuestion = null;
 
     /**
@@ -81,6 +86,7 @@ class Question
      */
     #[ORM\ManyToOne(targetEntity: QCM::class, inversedBy: 'questions')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['question:write'])]
     private ?QCM $qcm = null;
 
     /**
@@ -90,6 +96,7 @@ class Question
      * @var Collection<int, Answer>
      */
     #[ORM\OneToMany(targetEntity: Answer::class, mappedBy: 'question', cascade: ['persist'], orphanRemoval: true)]
+    #[Groups(['question:read', 'question:write', 'qcm:read', 'qcm:write'])] // 👈 AJOUT DE qcm:read/write
     private Collection $answers;
 
     public function __construct()

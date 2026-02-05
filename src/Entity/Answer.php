@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  * Entité Answer - Représente une réponse possible à une question QCM
@@ -17,11 +18,9 @@ use Doctrine\ORM\Mapping as ORM;
  * Cette entité gère les réponses (correctes ou incorrectes) proposées pour chaque question.
  * Chaque réponse a un texte et un flag indiquant si elle est correcte.
  *
- * Relations:
- * - ManyToOne: Appartient à une Question
- *
- * @package App\Entity
- * @author Équipe de Développement
+ * Groupes de sérialisation:
+ * - answer:read: Utilisé pour la sérialisation (lecture) des réponses
+ * - answer:write: Utilisé pour la désérialisation (écriture) des réponses
  */
 #[ORM\Entity(repositoryClass: AnswerRepository::class)]
 #[ApiResource(
@@ -31,7 +30,9 @@ use Doctrine\ORM\Mapping as ORM;
         new Post(description: 'Crée une nouvelle réponse'),
         new Put(description: 'Met à jour une réponse'),
         new Delete(description: 'Supprime une réponse'),
-    ]
+    ],
+    normalizationContext: ['groups' => ['answer:read']],
+    denormalizationContext: ['groups' => ['answer:write']]
 )]
 class Answer
 {
@@ -41,6 +42,7 @@ class Answer
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['answer:read', 'answer:write', 'question:read', 'question:write', 'qcm:read', 'qcm:write'])]
     private ?int $id = null;
 
     /**
@@ -48,6 +50,7 @@ class Answer
      * Exemple: "Paris", "Madrid", "Londres"
      */
     #[ORM\Column(type: 'text')]
+    #[Groups(['answer:read', 'answer:write', 'question:read', 'question:write', 'qcm:read', 'qcm:write'])]
     private ?string $text = null;
 
     /**
@@ -55,6 +58,7 @@ class Answer
      * true = réponse correcte, false = réponse incorrecte
      */
     #[ORM\Column]
+    #[Groups(['answer:read', 'answer:write', 'question:read', 'question:write', 'qcm:read', 'qcm:write'])]
     private bool $isCorrect = false;
 
     /**
@@ -62,6 +66,7 @@ class Answer
      * Permet de conserver l'ordre des réponses
      */
     #[ORM\Column(nullable: true)]
+    #[Groups(['answer:read', 'answer:write', 'question:read', 'question:write', 'qcm:read', 'qcm:write'])]
     private ?int $orderAnswer = null;
 
     /**
@@ -70,6 +75,7 @@ class Answer
      */
     #[ORM\ManyToOne(targetEntity: Question::class, inversedBy: 'answers')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['answer:write'])]
     private ?Question $question = null;
 
     public function getId(): ?int

@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\Delete;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups; // 👈 AJOUTÉ
 
 /**
  * Entité Course - Représente un cours dans le système
@@ -20,13 +21,9 @@ use Doctrine\ORM\Mapping as ORM;
  * (titre, description, matière, niveau) ainsi que ses ressources associées
  * (vidéos, documents, QCM). Elle expose une API REST complète pour les opérations CRUD.
  *
- * Relation "un-à-plusieurs" :
- * - Un cours peut avoir plusieurs QCM associés
- * - Un cours peut avoir plusieurs vidéos et documents (ressources)
- * - Un cours peut être suivi par plusieurs étudiants
- *
- * @package App\Entity
- * @author Équipe de Développement
+ * Groupes de sérialisation:
+ * - course:read: Utilisé pour la sérialisation (lecture) des cours
+ * - course:write: Utilisé pour la désérialisation (écriture) des cours
  */
 #[ORM\Entity(repositoryClass: CourseRepository::class)]
 #[ApiResource(
@@ -36,7 +33,9 @@ use Doctrine\ORM\Mapping as ORM;
         new Post(description: 'Crée un nouveau cours'),
         new Put(description: 'Met à jour un cours existant'),
         new Delete(description: 'Supprime un cours'),
-    ]
+    ],
+    normalizationContext: ['groups' => ['course:read']],     // 👈 AJOUTÉ
+    denormalizationContext: ['groups' => ['course:write']]   // 👈 AJOUTÉ
 )]
 class Course
 {
@@ -47,6 +46,7 @@ class Course
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['course:read'])] // 👈 AJOUTÉ
     private ?int $id = null;
 
     /**
@@ -55,6 +55,7 @@ class Course
      * Chaîne de caractères limité à 255 caractères
      */
     #[ORM\Column(length: 255)]
+    #[Groups(['course:read', 'course:write'])] // 👈 AJOUTÉ
     private ?string $title = null;
 
     /**
@@ -63,6 +64,7 @@ class Course
      * Texte long sans limite de caractères (type TEXT en base de données)
      */
     #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['course:read', 'course:write'])] // 👈 AJOUTÉ
     private ?string $description = null;
 
     /**
@@ -71,6 +73,7 @@ class Course
      * Chaîne de caractères limité à 255 caractères
      */
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['course:read', 'course:write'])] // 👈 AJOUTÉ
     private ?string $subject = null;
 
     /**
@@ -79,6 +82,7 @@ class Course
      * Chaîne de caractères limité à 255 caractères
      */
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['course:read', 'course:write'])] // 👈 AJOUTÉ
     private ?string $level = null;
 
     /**
@@ -86,6 +90,7 @@ class Course
      * Enregistrée automatiquement à la création du cours
      */
     #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['course:read'])] // 👈 AJOUTÉ
     private ?\DateTimeImmutable $createdAt = null;
 
     /**
@@ -93,6 +98,7 @@ class Course
      * Mise à jour automatiquement à chaque modification
      */
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    #[Groups(['course:read'])] // 👈 AJOUTÉ
     private ?\DateTimeImmutable $updatedAt = null;
 
     /**
@@ -103,6 +109,7 @@ class Course
      * @var Collection<int, QCM>
      */
     #[ORM\OneToMany(targetEntity: QCM::class, mappedBy: 'course', cascade: ['persist'])]
+    #[Groups(['course:read', 'course:write'])] // 👈 AJOUTÉ
     private Collection $qcms;
 
     /**
@@ -113,6 +120,7 @@ class Course
      * @var Collection<int, Video>
      */
     #[ORM\OneToMany(targetEntity: Video::class, mappedBy: 'course', cascade: ['persist'], orphanRemoval: true)]
+    #[Groups(['course:read', 'course:write'])] // 👈 AJOUTÉ
     private Collection $videos;
 
     /**
@@ -123,6 +131,7 @@ class Course
      * @var Collection<int, Document>
      */
     #[ORM\OneToMany(targetEntity: Document::class, mappedBy: 'course', cascade: ['persist'], orphanRemoval: true)]
+    #[Groups(['course:read', 'course:write'])] // 👈 AJOUTÉ
     private Collection $documents;
 
     /**
@@ -133,6 +142,7 @@ class Course
      */
     #[ORM\ManyToOne(targetEntity: Teacher::class)]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['course:read', 'course:write'])] // 👈 AJOUTÉ
     private ?Teacher $teacher = null;
 
     /**

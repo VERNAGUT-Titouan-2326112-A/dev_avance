@@ -12,22 +12,31 @@ use ApiPlatform\Metadata\Delete;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  * Entité QCM - Représente un questionnaire à choix multiples
  *
  * Cette entité gère la structure d'un QCM avec ses propriétés (thème, note, nom)
- * et ses réponses associées. Elle expose une API REST complète pour les opérations CRUD.
+ * et ses questions associées. Elle expose une API REST complète pour les opérations CRUD.
+ *
+ * Groupes de sérialisation:
+ * - qcm:read: Utilisé pour la sérialisation (lecture) des QCM
+ * - qcm:write: Utilisé pour la désérialisation (écriture) des QCM
  */
 #[ORM\Entity(repositoryClass: QCMRepository::class)]
+#[ORM\Table(name: 'qcm')]
 #[ApiResource(
+    shortName: 'qcm',
     operations: [
         new GetCollection(description: 'Récupère la liste de tous les QCM'),
         new Get(description: 'Récupère un QCM spécifique avec ses questions'),
         new Post(description: 'Crée un nouveau QCM'),
         new Put(description: 'Met à jour un QCM'),
         new Delete(description: 'Supprime un QCM'),
-    ]
+    ],
+    normalizationContext: ['groups' => ['qcm:read']],
+    denormalizationContext: ['groups' => ['qcm:write']]
 )]
 class QCM
 {
@@ -38,6 +47,7 @@ class QCM
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['qcm:read'])]
     private ?int $id = null;
 
     /**
@@ -45,6 +55,7 @@ class QCM
      * Chaîne de caractères limité à 255 caractères
      */
     #[ORM\Column(length: 255)]
+    #[Groups(['qcm:read', 'qcm:write'])]
     private ?string $theme = null;
 
     /**
@@ -52,6 +63,7 @@ class QCM
      * Valeur entière représentant le nombre de points possibles
      */
     #[ORM\Column]
+    #[Groups(['qcm:read', 'qcm:write'])]
     private ?int $note = null;
 
     /**
@@ -59,17 +71,18 @@ class QCM
      * Chaîne de caractères limité à 255 caractères
      */
     #[ORM\Column(length: 255)]
+    #[Groups(['qcm:read', 'qcm:write'])]
     private ?string $nom = null;
 
     /**
      * Course à laquelle ce QCM appartient
      * Relation "plusieurs-à-un" : plusieurs QCM peuvent appartenir à un même cours
-     * L'attribut mappedBy indique que Course gère la relation inverse
      *
      * @var ?Course
      */
     #[ORM\ManyToOne(targetEntity: Course::class, inversedBy: 'qcms')]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['qcm:read', 'qcm:write'])]
     private ?Course $course = null;
 
     /**
@@ -79,6 +92,7 @@ class QCM
      * @var Collection<int, Question>
      */
     #[ORM\OneToMany(targetEntity: Question::class, mappedBy: 'qcm', cascade: ['persist'], orphanRemoval: true)]
+    #[Groups(['qcm:read', 'qcm:write'])]
     private Collection $questions;
 
     public function __construct()
