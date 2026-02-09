@@ -28,10 +28,14 @@ class DocumentController extends AbstractController
     #[Route('/add_pdf', name: 'add_pdf')]
     public function addPdf(Request $request): Response
     {
-
         $file = $request->files->get('pdfFile');
         $title = $request->request->get('pdfTitle');
         $courseId = $request->request->get('courseId');
+
+        if (!$courseId) {
+            $this->addFlash('error', 'Aucun cours sélectionné.');
+            return $this->redirectToRoute('app_teacher_home');
+        }
 
         $course = $this->courseRepository->find($courseId);
 
@@ -55,19 +59,21 @@ class DocumentController extends AbstractController
         } else {
             $this->addFlash('error', 'Fichier invalide.');
         }
-        $pdfs = $this->documentRepository->findAll();
-        $videos = $this->videoRepository->findAll();
+
         return $this->redirectToRoute('app_teacher_home');
     }
 
     #[Route('/video/add', name: 'add_video', methods: ['POST'])]
     public function addVideo(Request $request): Response
     {
-        // Récupération du fichier et du titre
         $file = $request->files->get('videoFile');
         $title = $request->request->get('videoTitle');
-
         $courseId = $request->request->get('courseId');
+
+        if (!$courseId) {
+            $this->addFlash('error', 'Aucun cours sélectionné.');
+            return $this->redirectToRoute('app_teacher_home');
+        }
 
         $course = $this->courseRepository->find($courseId);
 
@@ -76,24 +82,25 @@ class DocumentController extends AbstractController
             return $this->redirectToRoute('app_teacher_home');
         }
 
-        // Vérification du fichier
-        if (!$file || !str_starts_with($file->getMimeType(), 'video/')) {
-            $this->addFlash('error', 'Fichier vidéo invalide.');
+        if (!$file) {
+            $this->addFlash('error', 'Aucun fichier vidéo envoyé.');
             return $this->redirectToRoute('app_teacher_home');
         }
 
-        // Nettoyage du nom de fichier
+        if (!str_starts_with($file->getMimeType(), 'video/')) {
+            $this->addFlash('error', 'Le fichier doit être une vidéo.');
+            return $this->redirectToRoute('app_teacher_home');
+        }
+
         $originalName = $file->getClientOriginalName();
         $info = pathinfo($originalName);
-        $filenameOnly = $info['filename']; // nom sans extension
-        $safeName = preg_replace('/[^a-zA-Z0-9_\.-]/', '_', $filenameOnly); // on enlève caractères spéciaux
-        $extension = $file->guessExtension(); // récupère l’extension réelle
+        $filenameOnly = $info['filename'];
+        $safeName = preg_replace('/[^a-zA-Z0-9_\.-]/', '_', $filenameOnly);
+        $extension = $file->guessExtension();
         $filename = uniqid() . '-' . $safeName . '.' . $extension;
 
-        // Déplacement du fichier dans le dossier public/uploads/video
         $file->move($this->getParameter('video_directory'), $filename);
 
-        // Création et enregistrement de l’entité Video
         $video = new Video();
         $video->setTitle($title);
         $video->setPath($filename);
@@ -105,5 +112,4 @@ class DocumentController extends AbstractController
 
         return $this->redirectToRoute('app_teacher_home');
     }
-
 }

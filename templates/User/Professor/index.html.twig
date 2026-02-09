@@ -123,6 +123,12 @@
                                     <video width="100%" height="200" controls>
                                         <source src="{{ asset('uploads/video/' ~ video.path) }}" type="video/mp4">
                                     </video>
+
+                                    <a href="{{ path('app_quiz_generate_video', {id: video.id}) }}"
+                                       class="btn btn-warning w-100 btn-sm"
+                                       onclick="return confirm('La génération par IA peut prendre du temps (transcription + analyse). Voulez-vous continuer ?')">
+                                        Générer un QCM Vidéo
+                                    </a>
                                 </div>
                             </div>
                         {% endfor %}
