@@ -44,8 +44,10 @@ class DocumentController extends AbstractController
             $this->addFlash('error', 'Fichier invalide.');
         }
         $pdfs = $this->documentRepository->findAll();
+        $videos = $this->videoRepository->findAll();
         return $this->render('User/Professor/index.html.twig', [
             'pdfs' => $pdfs,
+            'videos' => $videos,
         ]);
     }
 
