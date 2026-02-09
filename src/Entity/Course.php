@@ -421,7 +421,7 @@ class Course
 
     /**
      * Retire un document du cours
-     *// 👈 AJOUTÉ
+     *
      * @param Document $document Le document à retirer
      * @return static Instance courante pour permettre l'appel en chaîne
      */
