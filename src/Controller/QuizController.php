@@ -143,4 +143,52 @@ class QuizController extends AbstractController
 
         return $this->redirectToRoute('app_teacher_home');
     }
+
+    #[Route('/teacher/quiz/preview/{id}', name: 'app_teacher_quiz_preview')]
+    public function preview(Quiz $quiz): Response
+    {
+        return $this->render('User/Professor/preview_quiz.html.twig', [
+            'quiz' => $quiz,
+        ]);
+    }
+
+    #[Route('/teacher/quiz/preview/submit/{id}', name: 'app_teacher_quiz_preview_submit', methods: ['POST'])]
+    public function previewSubmit(Quiz $quiz, Request $request, EntityManagerInterface $em): Response
+    {
+        $score = 0;
+        $totalPoints = 0;
+        $userAnswers = $request->request->all('answers');
+        $correction = [];
+
+        foreach ($quiz->getQuestions() as $question) {
+            $points = $question->getPoints();
+            $totalPoints += $points;
+            $questionId = $question->getId();
+
+            $isCorrect = false;
+            $userAnswerId = null;
+
+            if (isset($userAnswers[$questionId])) {
+                $userAnswerId = $userAnswers[$questionId];
+                $selectedAnswer = $em->getRepository(Answer::class)->find($userAnswerId);
+
+                if ($selectedAnswer && $selectedAnswer->isCorrect()) {
+                    $score += $points;
+                    $isCorrect = true;
+                }
+            }
+
+            $correction[$questionId] = [
+                'isCorrect' => $isCorrect,
+                'userAnswerId' => $userAnswerId,
+            ];
+        }
+
+        return $this->render('User/Professor/preview_result.html.twig', [
+            'quiz' => $quiz,
+            'score' => $score,
+            'totalPoints' => $totalPoints,
+            'correction' => $correction
+        ]);
+    }
 }

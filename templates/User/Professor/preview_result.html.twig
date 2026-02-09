@@ -1,0 +1,51 @@
+{% extends 'teacherBase.html.twig' %}
+
+{% block title %}Résultat du Test{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="alert alert-{{ score == totalPoints ? 'success' : 'info' }} text-center">
+            <h2>Résultat du Test : {{ score }} / {{ totalPoints }}</h2>
+        </div>
+
+        <div class="card shadow mb-5">
+            <div class="card-header bg-dark text-white">Correction Détaillée</div>
+            <div class="card-body">
+                {% for question in quiz.questions %}
+                    {% set res = correction[question.id] %}
+
+                    <div class="mb-3 p-3 border rounded {{ res.isCorrect ? 'border-success bg-opacity-10 bg-success' : 'border-danger bg-opacity-10 bg-danger' }}">
+                        <h5>
+                            {{ loop.index }}. {{ question.text }}
+                            {% if res.isCorrect %}
+                                ✅
+                            {% else %}
+                                ❌
+                            {% endif %}
+                        </h5>
+
+                        <ul class="list-group mt-2">
+                            {% for answer in question.answers %}
+                                {% set isSelected = (answer.id == res.userAnswerId) %}
+                                {% set isTheRightAnswer = answer.isCorrect %}
+
+                                <li class="list-group-item
+                                {% if isTheRightAnswer %}list-group-item-success{% endif %}
+                                {% if isSelected and not isTheRightAnswer %}list-group-item-danger{% endif %}">
+
+                                    {{ answer.text }}
+
+                                    {% if isTheRightAnswer %} <strong>(Bonne réponse)</strong> {% endif %}
+                                    {% if isSelected %} <span class="badge bg-dark float-end">Votre choix</span> {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="card-footer text-center">
+                <a href="{{ path('app_teacher_home') }}" class="btn btn-primary">Retour au Dashboard</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'teacherBase.html.twig' %}
+
+{% block title %}Test : {{ quiz.title ?? quiz.nom }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 mb-5">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <h2 class="h5 mb-0">Mode Test : {{ quiz.title ?? quiz.nom }}</h2>
+                <span class="badge bg-warning text-dark">Vue Professeur</span>
+            </div>
+
+            <div class="card-body">
+                <form action="{{ path('app_teacher_quiz_preview_submit', {id: quiz.id}) }}" method="POST">
+                    {% for question in quiz.questions %}
+                        <div class="mb-4 p-3 border rounded bg-light">
+                            <h5 class="mb-3">
+                                <span class="badge bg-secondary me-2">{{ loop.index }}</span>
+                                {{ question.text }}
+                            </h5>
+                            <div class="ms-4">
+                                {% for answer in question.answers %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="answers[{{ question.id }}]" id="ans_{{ answer.id }}" value="{{ answer.id }}" required>
+                                        <label class="form-check-label" for="ans_{{ answer.id }}">
+                                            {{ answer.text }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ path('app_teacher_home') }}" class="btn btn-secondary">Annuler</a>
+                        <button type="submit" class="btn btn-primary">Valider le Test</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
