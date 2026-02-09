@@ -11,15 +11,19 @@
             Accédez à vos cours, regardez des vidéos, consultez des documents et passez des QCM générés par IA
         </p>
     </div>
+
     <div class="header-home text-center bg-white" style="padding: 20px; color: #000000; margin-top: 20px;">
         <h1>Vidéo/QCM:</h1>
 
         <div class="position-relative mt-4">
+
+            {# ================= SECTION PDF ================= #}
             <div class="text-center mt-4">
                 <button type="button" class="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#uploadPdfModal">
                     Ajouter un document PDF
                 </button>
             </div>
+
             <div class="modal fade" id="uploadPdfModal" tabindex="-1" aria-labelledby="uploadPdfModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -29,6 +33,16 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                             </div>
                             <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="courseIdPdf" class="form-label">Associer au cours</label>
+                                    <select class="form-select" name="courseId" id="courseIdPdf" required>
+                                        <option value="" disabled selected>Choisir un cours...</option>
+                                        {% for course in courses %}
+                                            <option value="{{ course.id }}">{{ course.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
                                 <div class="mb-3">
                                     <label for="pdfFile" class="form-label">Choisir un fichier PDF</label>
                                     <input class="form-control" type="file" id="pdfFile" name="pdfFile" accept="application/pdf" required>
@@ -46,6 +60,7 @@
                     </div>
                 </div>
             </div>
+
             {% if pdfs is not empty %}
                 <div class="header-home text-center bg-white mt-4" style="padding: 20px;">
                     <h2>Documents PDF :</h2>
@@ -54,8 +69,15 @@
                             <div class="card" style="width: 250px;">
                                 <div class="card-body text-center">
                                     <h5 class="card-title">{{ pdf.title }}</h5>
-                                    <a href="{{ asset('uploads/pdf/' ~ pdf.path) }}" class="btn btn-outline-primary" download> Télécharger </a>
-                                    <a href="{{ asset('uploads/pdf/' ~ pdf.path) }}" class="btn btn-outline-success" target="_blank"> Lire </a>
+                                    {# Affichage facultatif du nom du cours #}
+                                    <p class="text-muted small">{{ pdf.course.title ?? 'Aucun cours' }}</p>
+
+                                    {% if pdf.path %}
+                                        <a href="{{ asset('uploads/pdf/' ~ pdf.path) }}" class="btn btn-outline-primary" download> Télécharger </a>
+                                        <a href="{{ asset('uploads/pdf/' ~ pdf.path) }}" class="btn btn-outline-success" target="_blank"> Lire </a>
+                                    {% else %}
+                                        <p class="text-danger">Fichier introuvable</p>
+                                    {% endif %}
                                 </div>
                             </div>
                         {% endfor %}
@@ -64,17 +86,24 @@
             {% else %}
                 <p class="text-center mt-4">Aucun document PDF disponible.</p>
             {% endif %}
+
+
+            {# ================= SECTION VIDEO ================= #}
             <div class="header-home text-center bg-white mt-4" style="padding: 20px;">
                 <h2>Video :</h2>
                 <button type="button" class="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#uploadVideoModal">
                     Ajouter une vidéo
                 </button>
+
                 {% if videos is not empty %}
                     <div class="d-flex flex-wrap justify-content-center gap-3 mt-3">
                         {% for video in videos %}
                             <div class="card" style="width: 300px;">
                                 <div class="card-body text-center">
                                     <h5 class="card-title">{{ video.title }}</h5>
+                                    {# Affichage facultatif du nom du cours #}
+                                    <p class="text-muted small">{{ video.course.title ?? 'Aucun cours' }}</p>
+
                                     <video width="100%" height="200" controls>
                                         <source src="{{ asset('uploads/video/' ~ video.path) }}" type="video/mp4">
                                     </video>
@@ -85,6 +114,7 @@
                 {% else %}
                     <p class="text-center mt-4">Aucune vidéo disponible.</p>
                 {% endif %}
+
                 <div class="modal fade" id="uploadVideoModal" tabindex="-1" aria-labelledby="uploadVideoModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -94,6 +124,16 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                                 </div>
                                 <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="courseIdVideo" class="form-label">Associer au cours</label>
+                                        <select class="form-select" name="courseId" id="courseIdVideo" required>
+                                            <option value="" disabled selected>Choisir un cours...</option>
+                                            {% for course in courses %}
+                                                <option value="{{ course.id }}">{{ course.title }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
                                     <div class="mb-3">
                                         <label for="videoFile" class="form-label">Choisir une video</label>
                                         <input class="form-control" type="file" id="videoFile" name="videoFile" accept="video/*" required>
@@ -118,14 +158,13 @@
     </div>
 
     <div class="header-home text-center bg-primary" style="padding: 20px; color: white; margin-top: 20px;">
-        <h1>
-            Note
-        </h1>
+        <h1>Note</h1>
         <button class="btn btn-outline-light btn-lg">Voir les Notes</button>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 {% endblock %}
-{% block javascripts %}
 
-    {% endblock %}
+{% block javascripts %}
+{% endblock %}

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Document;
 use App\Entity\Video;
+use App\Repository\CourseRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\VideoRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,11 +16,13 @@ class DocumentController extends AbstractController
 {
     private DocumentRepository $documentRepository;
     private VideoRepository $videoRepository;
+    private CourseRepository $courseRepository;
 
-    public function __construct(DocumentRepository $documentRepository, VideoRepository $videoRepository)
+    public function __construct(DocumentRepository $documentRepository, VideoRepository $videoRepository, CourseRepository $courseRepository)
     {
         $this->documentRepository = $documentRepository;
         $this->videoRepository = $videoRepository;
+        $this->courseRepository = $courseRepository;
     }
 
     #[Route('/add_pdf', name: 'add_pdf')]
@@ -28,6 +31,14 @@ class DocumentController extends AbstractController
 
         $file = $request->files->get('pdfFile');
         $title = $request->request->get('pdfTitle');
+        $courseId = $request->request->get('courseId');
+
+        $course = $this->courseRepository->find($courseId);
+
+        if (!$course) {
+            $this->addFlash('error', 'Cours introuvable.');
+            return $this->redirectToRoute('app_teacher_home');
+        }
 
         if ($file && $file->getMimeType() === 'application/pdf') {
             $filename = uniqid() . '-' . $file->getClientOriginalName();
@@ -36,6 +47,7 @@ class DocumentController extends AbstractController
             $pdf = new Document();
             $pdf->setTitle($title);
             $pdf->setPath($filename);
+            $pdf->setCourse($course);
 
             $this->documentRepository->save($pdf, true);
 
@@ -45,10 +57,7 @@ class DocumentController extends AbstractController
         }
         $pdfs = $this->documentRepository->findAll();
         $videos = $this->videoRepository->findAll();
-        return $this->render('User/Professor/index.html.twig', [
-            'pdfs' => $pdfs,
-            'videos' => $videos,
-        ]);
+        return $this->redirectToRoute('app_teacher_home');
     }
 
     #[Route('/video/add', name: 'add_video', methods: ['POST'])]
@@ -57,6 +66,15 @@ class DocumentController extends AbstractController
         // Récupération du fichier et du titre
         $file = $request->files->get('videoFile');
         $title = $request->request->get('videoTitle');
+
+        $courseId = $request->request->get('courseId');
+
+        $course = $this->courseRepository->find($courseId);
+
+        if (!$course) {
+            $this->addFlash('error', 'Cours introuvable.');
+            return $this->redirectToRoute('app_teacher_home');
+        }
 
         // Vérification du fichier
         if (!$file || !str_starts_with($file->getMimeType(), 'video/')) {
@@ -79,6 +97,7 @@ class DocumentController extends AbstractController
         $video = new Video();
         $video->setTitle($title);
         $video->setPath($filename);
+        $video->setCourse($course);
 
         $this->videoRepository->save($video, true);
 
