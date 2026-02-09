@@ -108,9 +108,10 @@ class Course
      *
      * @var Collection<int, QCM>
      */
-    #[ORM\OneToMany(targetEntity: QCM::class, mappedBy: 'course', cascade: ['persist'])]
+    #[ORM\OneToMany(targetEntity: QCM::class, mappedBy: 'course', orphanRemoval: true)]
     #[Groups(['course:read', 'course:write'])] // 👈 AJOUTÉ
     private Collection $qcms;
+
 
     /**
      * Collection des vidéos pédagogiques du cours
