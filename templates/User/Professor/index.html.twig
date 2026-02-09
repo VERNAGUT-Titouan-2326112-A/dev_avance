@@ -80,17 +80,46 @@
                             <div class="card" style="width: 250px;">
                                 <div class="card-body text-center">
                                     <h5 class="card-title">{{ pdf.title }}</h5>
-                                    {# Affichage facultatif du nom du cours #}
                                     <p class="text-muted small">{{ pdf.course.title ?? 'Aucun cours' }}</p>
 
                                     {% if pdf.path %}
-                                        <a href="{{ asset('uploads/pdf/' ~ pdf.path) }}" class="btn btn-outline-primary" download> Télécharger </a>
-                                        <a href="{{ asset('uploads/pdf/' ~ pdf.path) }}" class="btn btn-outline-success" target="_blank"> Lire </a>
-                                        <a href="{{ path('app_quiz_generate', {id: pdf.id}) }}"
-                                           class="btn btn-warning w-100 btn-sm"
-                                           onclick="return confirm('La génération par IA peut prendre quelques secondes. Voulez-vous continuer ?')">
-                                            Générer un QCM
-                                        </a>
+                                        <a href="{{ asset('uploads/pdf/' ~ pdf.path) }}" class="btn btn-outline-primary mb-2" download> Télécharger </a>
+                                        <a href="{{ asset('uploads/pdf/' ~ pdf.path) }}" class="btn btn-outline-success mb-2" target="_blank"> Lire </a>
+
+                                        <button type="button" class="btn btn-warning w-100 btn-sm" data-bs-toggle="modal" data-bs-target="#modalGenPdf{{ pdf.id }}">
+                                            ⚙️ Configurer & Générer QCM
+                                        </button>
+
+                                        <div class="modal fade" id="modalGenPdf{{ pdf.id }}" tabindex="-1" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <form action="{{ path('app_quiz_generate', {id: pdf.id}) }}" method="post">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Générer un QCM : {{ pdf.title }}</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <div class="modal-body text-start">
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Nombre de questions</label>
+                                                                <input type="number" name="nbQuestions" class="form-control" value="10" min="1" max="20" required>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Type de QCM</label>
+                                                                <select name="type" class="form-select">
+                                                                    <option value="mcq">QCM Classique (4 choix)</option>
+                                                                    <option value="true_false">Vrai ou Faux</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                                            <button type="submit" class="btn btn-warning" onclick="return confirm('Lancement de l\'IA...')">Générer !</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     {% else %}
                                         <p class="text-danger">Fichier introuvable</p>
                                     {% endif %}
@@ -117,18 +146,48 @@
                             <div class="card" style="width: 300px;">
                                 <div class="card-body text-center">
                                     <h5 class="card-title">{{ video.title }}</h5>
-                                    {# Affichage facultatif du nom du cours #}
                                     <p class="text-muted small">{{ video.course.title ?? 'Aucun cours' }}</p>
 
                                     <video width="100%" height="200" controls>
                                         <source src="{{ asset('uploads/video/' ~ video.path) }}" type="video/mp4">
                                     </video>
 
-                                    <a href="{{ path('app_quiz_generate_video', {id: video.id}) }}"
-                                       class="btn btn-warning w-100 btn-sm"
-                                       onclick="return confirm('La génération par IA peut prendre du temps (transcription + analyse). Voulez-vous continuer ?')">
-                                        Générer un QCM Vidéo
-                                    </a>
+                                    <button type="button" class="btn btn-warning w-100 btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#modalGenVideo{{ video.id }}">
+                                        ⚙️ Configurer & Générer QCM Vidéo
+                                    </button>
+
+                                    <div class="modal fade" id="modalGenVideo{{ video.id }}" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form action="{{ path('app_quiz_generate_video', {id: video.id}) }}" method="post">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Générer QCM Vidéo : {{ video.title }}</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body text-start">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Nombre de questions</label>
+                                                            <input type="number" name="nbQuestions" class="form-control" value="10" min="1" max="20" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Type de QCM</label>
+                                                            <select name="type" class="form-select">
+                                                                <option value="mcq">QCM Classique (4 choix)</option>
+                                                                <option value="true_false">Vrai ou Faux</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="alert alert-info small">
+                                                            ⚠️ L'analyse vidéo prend du temps (transcription + génération).
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                                        <button type="submit" class="btn btn-warning">Générer !</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         {% endfor %}

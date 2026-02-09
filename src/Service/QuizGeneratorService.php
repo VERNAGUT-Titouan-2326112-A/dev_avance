@@ -27,7 +27,7 @@ class QuizGeneratorService
         $this->groqKey = $groqKey;
     }
 
-    public function generateFromDocument(string $filename): array
+    public function generateFromDocument(string $filename, int $nbQuestions = 10, string $type = 'mcq'): array
     {
         $filePath = $this->projectDir . '/public/uploads/pdf/' . $filename;
 
@@ -41,10 +41,10 @@ class QuizGeneratorService
 
         $text = substr($text, 0, 12000);
 
-        return $this->callMistral($text);
+        return $this->callMistral($text, $nbQuestions, $type);
     }
 
-    public function generateFromVideo(string $filename): array
+    public function generateFromVideo(string $filename, int $nbQuestions = 10, string $type = 'mcq'): array
     {
         $filePath = $this->projectDir . '/public/uploads/video/' . $filename;
         if (!file_exists($filePath)) throw new \Exception("Fichier vidéo introuvable.");
@@ -53,25 +53,50 @@ class QuizGeneratorService
 
         $text = substr($text, 0, 15000);
 
-        return $this->callMistral($text);
+        return $this->callMistral($text, $nbQuestions, $type);
     }
 
-    private function callMistral(string $text): array
+    private function callMistral(string $text, int $nbQuestions, string $type): array
     {
-        $jsonStructure = '{
-            "title": "Titre du QCM",
-            "questions": [
-                {
-                    "text": "Question ?",
-                    "points": 1,
-                    "type": "multiple_choice",
-                    "answers": [
-                        {"text": "Reponse A", "isCorrect": true},
-                        {"text": "Reponse B", "isCorrect": false}
-                    ]
-                }
-            ]
-        }';
+        if ($type === 'true_false') {
+            $systemInstruction = "Tu es un générateur de quiz. Tu dois générer un questionnaire de type Vrai ou Faux.";
+            $rules = "RÈGLES STRICTES : 1. Génère exactement $nbQuestions questions. 2. Chaque question doit avoir EXACTEMENT 2 réponses : 'Vrai' et 'Faux'. 3. Le champ 'type' dans le JSON doit être 'true_false'.";
+            $jsonExample = '{
+                "title": "Titre du Quiz",
+                "questions": [
+                    {
+                        "text": "Le ciel est vert ?",
+                        "points": 1,
+                        "type": "true_false",
+                        "answers": [
+                            {"text": "Vrai", "isCorrect": false},
+                            {"text": "Faux", "isCorrect": true}
+                        ]
+                    }
+                ]
+            }';
+        } else {
+            $systemInstruction = "Tu es un générateur de QCM. Tu dois générer un questionnaire à choix multiples.";
+            $rules = "RÈGLES STRICTES : 1. Génère exactement $nbQuestions questions. 2. Chaque question doit avoir 4 choix de réponse. 3. Une seule réponse est correcte. 4. Le champ 'type' dans le JSON doit être 'multiple_choice'.";
+            $jsonExample = '{
+                "title": "Titre du Quiz",
+                "questions": [
+                    {
+                        "text": "Quelle est la capitale de la France ?",
+                        "points": 1,
+                        "type": "multiple_choice",
+                        "answers": [
+                            {"text": "Paris", "isCorrect": true},
+                            {"text": "Londres", "isCorrect": false},
+                            {"text": "Berlin", "isCorrect": false},
+                            {"text": "Madrid", "isCorrect": false}
+                        ]
+                    }
+                ]
+            }';
+        }
+
+        $finalPrompt = $systemInstruction . " " . $rules . " Le format de sortie doit être EXCLUSIVEMENT ce JSON : " . $jsonExample;
 
         $response = $this->httpClient->request('POST', 'https://api.mistral.ai/v1/chat/completions', [
             'headers' => [
@@ -85,11 +110,11 @@ class QuizGeneratorService
                 'messages' => [
                     [
                         'role' => 'system',
-                        'content' => 'Tu es un expert pédagogique. Génère un QCM au format JSON strict respectant cette structure : ' . $jsonStructure
+                        'content' => $finalPrompt
                     ],
                     [
                         'role' => 'user',
-                        'content' => "Voici le cours :\n\n" . $text
+                        'content' => "Voici le contenu du cours à utiliser pour les questions :\n\n" . $text
                     ]
                 ]
             ]
