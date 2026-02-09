@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Repository\QCMRepository;
+use App\Repository\QuizRepository;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Get;
@@ -15,33 +15,33 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
- * Entité QCM - Représente un questionnaire à choix multiples
+ * Entité Quiz - Représente un questionnaire à choix multiples
  *
- * Cette entité gère la structure d'un QCM avec ses propriétés (thème, note, nom)
+ * Cette entité gère la structure d'un Quiz avec ses propriétés (thème, note, nom)
  * et ses questions associées. Elle expose une API REST complète pour les opérations CRUD.
  *
  * Groupes de sérialisation:
- * - qcm:read: Utilisé pour la sérialisation (lecture) des QCM
- * - qcm:write: Utilisé pour la désérialisation (écriture) des QCM
+ * - qcm:read: Utilisé pour la sérialisation (lecture) des Quiz
+ * - qcm:write: Utilisé pour la désérialisation (écriture) des Quiz
  */
-#[ORM\Entity(repositoryClass: QCMRepository::class)]
+#[ORM\Entity(repositoryClass: QuizRepository::class)]
 #[ORM\Table(name: 'qcm')]
 #[ApiResource(
     shortName: 'qcm',
     operations: [
-        new GetCollection(description: 'Récupère la liste de tous les QCM'),
-        new Get(description: 'Récupère un QCM spécifique avec ses questions'),
-        new Post(description: 'Crée un nouveau QCM'),
-        new Put(description: 'Met à jour un QCM'),
-        new Delete(description: 'Supprime un QCM'),
+        new GetCollection(description: 'Récupère la liste de tous les Quiz'),
+        new Get(description: 'Récupère un Quiz spécifique avec ses questions'),
+        new Post(description: 'Crée un nouveau Quiz'),
+        new Put(description: 'Met à jour un Quiz'),
+        new Delete(description: 'Supprime un Quiz'),
     ],
     normalizationContext: ['groups' => ['qcm:read']],
     denormalizationContext: ['groups' => ['qcm:write']]
 )]
-class QCM
+class Quiz
 {
     /**
-     * Identifiant unique du QCM
+     * Identifiant unique du Quiz
      * Clé primaire auto-générée par la base de données
      */
     #[ORM\Id]
@@ -51,7 +51,7 @@ class QCM
     private ?int $id = null;
 
     /**
-     * Thème du QCM (ex: "Mathématiques", "Histoire")
+     * Thème du Quiz (ex: "Mathématiques", "Histoire")
      * Chaîne de caractères limité à 255 caractères
      */
     #[ORM\Column(length: 255)]
@@ -59,7 +59,7 @@ class QCM
     private ?string $theme = null;
 
     /**
-     * Score ou note maximale du QCM
+     * Score ou note maximale du Quiz
      * Valeur entière représentant le nombre de points possibles
      */
     #[ORM\Column]
@@ -67,7 +67,7 @@ class QCM
     private ?int $note = null;
 
     /**
-     * Nom/titre du QCM (ex: "Quiz Chapitre 3")
+     * Nom/titre du Quiz (ex: "Quiz Chapitre 3")
      * Chaîne de caractères limité à 255 caractères
      */
     #[ORM\Column(length: 255)]
@@ -75,8 +75,8 @@ class QCM
     private ?string $nom = null;
 
     /**
-     * Course à laquelle ce QCM appartient
-     * Relation "plusieurs-à-un" : plusieurs QCM peuvent appartenir à un même cours
+     * Course à laquelle ce Quiz appartient
+     * Relation "plusieurs-à-un" : plusieurs Quiz peuvent appartenir à un même cours
      *
      * @var ?Course
      */
@@ -86,8 +86,8 @@ class QCM
     private ?Course $course = null;
 
     /**
-     * Collection des questions associées à ce QCM
-     * Une relation "un-à-plusieurs" : un QCM peut avoir plusieurs questions
+     * Collection des questions associées à ce Quiz
+     * Une relation "un-à-plusieurs" : un Quiz peut avoir plusieurs questions
      *
      * @var Collection<int, Question>
      */
@@ -101,9 +101,9 @@ class QCM
     }
 
     /**
-     * Récupère l'identifiant unique du QCM
+     * Récupère l'identifiant unique du Quiz
      *
-     * @return ?int L'ID du QCM, null si non encore persisté
+     * @return ?int L'ID du Quiz, null si non encore persisté
      */
     public function getId(): ?int
     {
@@ -111,9 +111,9 @@ class QCM
     }
 
     /**
-     * Récupère le thème du QCM
+     * Récupère le thème du Quiz
      *
-     * @return ?string Le thème du QCM
+     * @return ?string Le thème du Quiz
      */
     public function getTheme(): ?string
     {
@@ -121,9 +121,9 @@ class QCM
     }
 
     /**
-     * Définit le thème du QCM
+     * Définit le thème du Quiz
      *
-     * @param string $theme Le thème à assigner au QCM
+     * @param string $theme Le thème à assigner au Quiz
      * @return static Instance courante pour permettre l'appel en chaîne (fluent interface)
      */
     public function setTheme(string $theme): static
@@ -134,9 +134,9 @@ class QCM
     }
 
     /**
-     * Récupère la note maximale du QCM
+     * Récupère la note maximale du Quiz
      *
-     * @return ?int La note maximale du QCM
+     * @return ?int La note maximale du Quiz
      */
     public function getNote(): ?int
     {
@@ -144,7 +144,7 @@ class QCM
     }
 
     /**
-     * Définit la note maximale du QCM
+     * Définit la note maximale du Quiz
      *
      * @param int $note La note maximale à assigner
      * @return static Instance courante pour permettre l'appel en chaîne
@@ -157,9 +157,9 @@ class QCM
     }
 
     /**
-     * Récupère le nom/titre du QCM
+     * Récupère le nom/titre du Quiz
      *
-     * @return ?string Le nom du QCM
+     * @return ?string Le nom du Quiz
      */
     public function getNom(): ?string
     {
@@ -167,9 +167,9 @@ class QCM
     }
 
     /**
-     * Définit le nom/titre du QCM
+     * Définit le nom/titre du Quiz
      *
-     * @param string $nom Le nom à assigner au QCM
+     * @param string $nom Le nom à assigner au Quiz
      * @return static Instance courante pour permettre l'appel en chaîne
      */
     public function setNom(string $nom): static
@@ -180,7 +180,7 @@ class QCM
     }
 
     /**
-     * Récupère toutes les questions associées à ce QCM
+     * Récupère toutes les questions associées à ce Quiz
      *
      * @return Collection<int, Question> Collection d'objets Question
      */
@@ -190,7 +190,7 @@ class QCM
     }
 
     /**
-     * Ajoute une question au QCM
+     * Ajoute une question au Quiz
      * Évite les doublons et maintient la relation bidirectionnelle
      *
      * @param Question $question La question à ajouter
@@ -207,7 +207,7 @@ class QCM
     }
 
     /**
-     * Retire une question du QCM
+     * Retire une question du Quiz
      * Maintient la cohérence de la relation bidirectionnelle
      *
      * @param Question $question La question à retirer
@@ -226,7 +226,7 @@ class QCM
     }
 
     /**
-     * Récupère le cours auquel ce QCM appartient
+     * Récupère le cours auquel ce Quiz appartient
      *
      * @return ?Course Le cours parent, null si non associé
      */
@@ -236,7 +236,7 @@ class QCM
     }
 
     /**
-     * Définit le cours pour ce QCM
+     * Définit le cours pour ce Quiz
      *
      * @param ?Course $course Le cours à assigner, null pour dissocier
      * @return static Instance courante pour permettre l'appel en chaîne

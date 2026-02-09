@@ -14,7 +14,7 @@ use Doctrine\Persistence\ObjectManager;
  * sont chargées dans le bon ordre.
  *
  * Ordre de chargement :
- * 1. DynamicqcmFixtures (QCM indépendants)
+ * 1. DynamicqcmFixtures (Quiz indépendants)
  * 2. UserFixtures (Utilisateurs indépendants)
  *
  * @package App\DataFixtures

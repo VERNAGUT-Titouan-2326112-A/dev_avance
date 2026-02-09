@@ -12,15 +12,15 @@ use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Entité QuizAttempt - Tentative de réponse à un QCM
- * Enregistre l'historique des réponses des étudiants aux QCM avec les scores
+ * Entité QuizAttempt - Tentative de réponse à un Quiz
+ * Enregistre l'historique des réponses des étudiants aux Quiz avec les scores
  */
 #[ORM\Entity(repositoryClass: QuizAttemptRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(description: 'Récupère l\'historique des tentatives de QCM'),
+        new GetCollection(description: 'Récupère l\'historique des tentatives de Quiz'),
         new Get(description: 'Récupère les détails d\'une tentative'),
-        new Post(description: 'Soumet les réponses d\'un QCM'),
+        new Post(description: 'Soumet les réponses d\'un Quiz'),
         new Put(description: 'Met à jour une tentative'),
         new Delete(description: 'Supprime une tentative'),
     ]
@@ -36,9 +36,9 @@ class QuizAttempt
     #[ORM\JoinColumn(nullable: false)]
     private ?Student $student = null;
 
-    #[ORM\ManyToOne(targetEntity: QCM::class)]
+    #[ORM\ManyToOne(targetEntity: Quiz::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private ?QCM $qcm = null;
+    private ?Quiz $qcm = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $answers = null;
@@ -70,12 +70,12 @@ class QuizAttempt
         return $this;
     }
 
-    public function getQcm(): ?QCM
+    public function getQcm(): ?Quiz
     {
         return $this->qcm;
     }
 
-    public function setQcm(?QCM $qcm): static
+    public function setQcm(?Quiz $qcm): static
     {
         $this->qcm = $qcm;
         return $this;

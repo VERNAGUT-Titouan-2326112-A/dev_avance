@@ -19,7 +19,7 @@ use Symfony\Component\Serializer\Attribute\Groups; // 👈 AJOUTÉ
  *
  * Cette entité gère la structure d'un cours avec ses informations générales
  * (titre, description, matière, niveau) ainsi que ses ressources associées
- * (vidéos, documents, QCM). Elle expose une API REST complète pour les opérations CRUD.
+ * (vidéos, documents, Quiz). Elle expose une API REST complète pour les opérations CRUD.
  *
  * Groupes de sérialisation:
  * - course:read: Utilisé pour la sérialisation (lecture) des cours
@@ -102,13 +102,13 @@ class Course
     private ?\DateTimeImmutable $updatedAt = null;
 
     /**
-     * Collection des QCM associés à ce cours
-     * Relation "un-à-plusieurs" : un cours peut avoir plusieurs QCM
-     * La suppression du cours ne supprime pas les QCM (cascade:persist uniquement)
+     * Collection des Quiz associés à ce cours
+     * Relation "un-à-plusieurs" : un cours peut avoir plusieurs Quiz
+     * La suppression du cours ne supprime pas les Quiz (cascade:persist uniquement)
      *
-     * @var Collection<int, QCM>
+     * @var Collection<int, Quiz>
      */
-    #[ORM\OneToMany(targetEntity: QCM::class, mappedBy: 'course', cascade: ['persist'])]
+    #[ORM\OneToMany(targetEntity: Quiz::class, mappedBy: 'course', cascade: ['persist'])]
     #[Groups(['course:read', 'course:write'])] // 👈 AJOUTÉ
     private Collection $qcms;
 
@@ -147,7 +147,7 @@ class Course
 
     /**
      * Constructeur de l'entité Course
-     * Initialise les collections vides pour les QCM
+     * Initialise les collections vides pour les Quiz
      */
     public function __construct()
     {
@@ -284,9 +284,9 @@ class Course
     }
 
     /**
-     * Récupère tous les QCM associés à ce cours
+     * Récupère tous les Quiz associés à ce cours
      *
-     * @return Collection<int, QCM> Collection d'objets QCM
+     * @return Collection<int, Quiz> Collection d'objets Quiz
      */
     public function getQcms(): Collection
     {
@@ -294,13 +294,13 @@ class Course
     }
 
     /**
-     * Ajoute un QCM au cours
+     * Ajoute un Quiz au cours
      * Évite les doublons et maintient la relation bidirectionnelle
      *
-     * @param QCM $qcm Le QCM à ajouter
+     * @param Quiz $qcm Le Quiz à ajouter
      * @return static Instance courante pour permettre l'appel en chaîne
      */
-    public function addQcm(QCM $qcm): static
+    public function addQcm(Quiz $qcm): static
     {
         if (!$this->qcms->contains($qcm)) {
             $this->qcms->add($qcm);
@@ -311,13 +311,13 @@ class Course
     }
 
     /**
-     * Retire un QCM du cours
+     * Retire un Quiz du cours
      * Maintient la cohérence de la relation bidirectionnelle
      *
-     * @param QCM $qcm Le QCM à retirer
+     * @param Quiz $qcm Le Quiz à retirer
      * @return static Instance courante pour permettre l'appel en chaîne
      */
-    public function removeQcm(QCM $qcm): static
+    public function removeQcm(Quiz $qcm): static
     {
         if ($this->qcms->removeElement($qcm)) {
             if ($qcm->getCourse() === $this) {

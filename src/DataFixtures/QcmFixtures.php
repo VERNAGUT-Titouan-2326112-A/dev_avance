@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\QCM;
+use App\Entity\Quiz;
 use App\Repository\CourseRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -11,11 +11,11 @@ use Doctrine\Persistence\ObjectManager;
 /**
  * QcmFixtures
  *
- * Classe de fixtures pour charger les QCM, Questions et Réponses dans la base de données.
- * Crée plusieurs QCM avec des questions et réponses associées.
+ * Classe de fixtures pour charger les Quiz, Questions et Réponses dans la base de données.
+ * Crée plusieurs Quiz avec des questions et réponses associées.
  *
  * Dépendances :
- * - CourseFixtures (pour les cours associés aux QCM)
+ * - CourseFixtures (pour les cours associés aux Quiz)
  *
  * @package App\DataFixtures
  * @author Équipe de Développement
@@ -39,7 +39,7 @@ class QcmFixtures extends Fixture implements DependentFixtureInterface
 
     /**
      * Constantes pour les références de fixture
-     * Permet de récupérer les QCM créés dans d'autres fixtures
+     * Permet de récupérer les Quiz créés dans d'autres fixtures
      */
     public const QCM_SCRUM = 'qcm_scrum';
     public const QCM_AGILE = 'qcm_agile';
@@ -57,12 +57,12 @@ class QcmFixtures extends Fixture implements DependentFixtureInterface
     }
 
     /**
-     * Charge tous les QCM en base de données.
+     * Charge tous les Quiz en base de données.
      *
-     * Crée 3 QCM :
-     * - QCM SCRUM
-     * - QCM AGILE
-     * - QCM KANBAN
+     * Crée 3 Quiz :
+     * - Quiz SCRUM
+     * - Quiz AGILE
+     * - Quiz KANBAN
      *
      * Note: Les réponses sont créées séparément par ResponseFixtures.
      *
@@ -76,8 +76,8 @@ class QcmFixtures extends Fixture implements DependentFixtureInterface
         $courseAgile = $this->courseRepository->findOneBy(['title' => 'Agile & Scrum']);
         $courseKanban = $this->courseRepository->findOneBy(['title' => 'Kanban & Lean']);
 
-        // Crée le QCM SCRUM
-        $qcmScrum = new QCM();
+        // Crée le Quiz SCRUM
+        $qcmScrum = new Quiz();
         $qcmScrum->setNom('Quiz Scrum');
         $qcmScrum->setTheme('Agile - Scrum');
         $qcmScrum->setNote(10);
@@ -85,8 +85,8 @@ class QcmFixtures extends Fixture implements DependentFixtureInterface
         $manager->persist($qcmScrum);
         $this->addReference(self::QCM_SCRUM, $qcmScrum);
 
-        // Crée le QCM AGILE
-        $qcmAgile = new QCM();
+        // Crée le Quiz AGILE
+        $qcmAgile = new Quiz();
         $qcmAgile->setNom('Quiz Agile');
         $qcmAgile->setTheme('Méthodologies Agiles');
         $qcmAgile->setNote(8);
@@ -94,8 +94,8 @@ class QcmFixtures extends Fixture implements DependentFixtureInterface
         $manager->persist($qcmAgile);
         $this->addReference(self::QCM_AGILE, $qcmAgile);
 
-        // Crée le QCM KANBAN
-        $qcmKanban = new QCM();
+        // Crée le Quiz KANBAN
+        $qcmKanban = new Quiz();
         $qcmKanban->setNom('Quiz Kanban');
         $qcmKanban->setTheme('Kanban - Lean');
         $qcmKanban->setNote(7);
@@ -104,7 +104,7 @@ class QcmFixtures extends Fixture implements DependentFixtureInterface
         $manager->persist($qcmKanban);
         $this->addReference(self::QCM_KANBAN, $qcmKanban);
 
-        // Persiste tous les QCM en base de données
+        // Persiste tous les Quiz en base de données
         $manager->flush();
     }
 }

@@ -3,6 +3,17 @@
 {% block title %}Accueil{% endblock %}
 
 {% block body %}
+    <div class="container mt-3">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
     <div class="header-home text-center bg-primary" style="padding: 20px; color: white; margin-top: 20px;">
         <h1>
             Plateforme d'Apprentissage Moderne
@@ -75,6 +86,11 @@
                                     {% if pdf.path %}
                                         <a href="{{ asset('uploads/pdf/' ~ pdf.path) }}" class="btn btn-outline-primary" download> Télécharger </a>
                                         <a href="{{ asset('uploads/pdf/' ~ pdf.path) }}" class="btn btn-outline-success" target="_blank"> Lire </a>
+                                        <a href="{{ path('app_quiz_generate', {id: pdf.id}) }}"
+                                           class="btn btn-warning w-100 btn-sm"
+                                           onclick="return confirm('La génération par IA peut prendre quelques secondes. Voulez-vous continuer ?')">
+                                            Générer un QCM
+                                        </a>
                                     {% else %}
                                         <p class="text-danger">Fichier introuvable</p>
                                     {% endif %}

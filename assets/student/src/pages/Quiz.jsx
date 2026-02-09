@@ -14,7 +14,7 @@ export default function Quiz() {
 
     const handleSubmit = async () => {
         await submitQuiz(courseId, answers);
-        alert("QCM envoyé !");
+        alert("Quiz envoyé !");
     };
 
     return (
