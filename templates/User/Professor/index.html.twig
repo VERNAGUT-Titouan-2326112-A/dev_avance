@@ -72,8 +72,12 @@
                                     {# Affichage facultatif du nom du cours #}
                                     <p class="text-muted small">{{ pdf.course.title ?? 'Aucun cours' }}</p>
 
-                                    <a href="{{ asset('uploads/pdf/' ~ pdf.path) }}" class="btn btn-outline-primary" download> Télécharger </a>
-                                    <a href="{{ asset('uploads/pdf/' ~ pdf.path) }}" class="btn btn-outline-success" target="_blank"> Lire </a>
+                                    {% if pdf.path %}
+                                        <a href="{{ asset('uploads/pdf/' ~ pdf.path) }}" class="btn btn-outline-primary" download> Télécharger </a>
+                                        <a href="{{ asset('uploads/pdf/' ~ pdf.path) }}" class="btn btn-outline-success" target="_blank"> Lire </a>
+                                    {% else %}
+                                        <p class="text-danger">Fichier introuvable</p>
+                                    {% endif %}
                                 </div>
                             </div>
                         {% endfor %}
