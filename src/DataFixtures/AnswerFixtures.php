@@ -4,8 +4,8 @@ namespace App\DataFixtures;
 
 use App\Entity\Answer;
 use App\Entity\Question;
-use App\Entity\QCM;
-use App\Repository\QCMRepository;
+use App\Entity\Quiz;
+use App\Repository\QuizRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -14,10 +14,10 @@ use Doctrine\Persistence\ObjectManager;
  * AnswerFixtures (Anciennement ResponseFixtures)
  *
  * Classe de fixtures pour charger les questions et réponses (Answer) dans la base de données.
- * Crée les questions et leurs réponses associées pour chaque QCM.
+ * Crée les questions et leurs réponses associées pour chaque Quiz.
  *
  * Dépendances :
- * - QcmFixtures (pour les QCM associés aux questions/réponses)
+ * - QcmFixtures (pour les Quiz associés aux questions/réponses)
  *
  * @package App\DataFixtures
  * @author Équipe de Développement
@@ -25,16 +25,16 @@ use Doctrine\Persistence\ObjectManager;
 class AnswerFixtures extends Fixture implements DependentFixtureInterface
 {
     /**
-     * Repository pour accéder aux QCM
+     * Repository pour accéder aux Quiz
      */
-    private QCMRepository $qcmRepository;
+    private QuizRepository $qcmRepository;
 
     /**
      * Constructeur de AnswerFixtures
      *
-     * @param QCMRepository $qcmRepository Le repository pour accéder aux QCM
+     * @param QuizRepository $qcmRepository Le repository pour accéder aux Quiz
      */
-    public function __construct(QCMRepository $qcmRepository)
+    public function __construct(QuizRepository $qcmRepository)
     {
         $this->qcmRepository = $qcmRepository;
     }
@@ -53,10 +53,10 @@ class AnswerFixtures extends Fixture implements DependentFixtureInterface
     /**
      * Charge toutes les questions et réponses en base de données.
      *
-     * Crée les questions/réponses pour chaque QCM :
-     * - Réponses pour QCM SCRUM
-     * - Réponses pour QCM AGILE
-     * - Réponses pour QCM KANBAN
+     * Crée les questions/réponses pour chaque Quiz :
+     * - Réponses pour Quiz SCRUM
+     * - Réponses pour Quiz AGILE
+     * - Réponses pour Quiz KANBAN
      *
      * @param ObjectManager $manager Le gestionnaire Doctrine pour persister les entités
      *
@@ -64,12 +64,12 @@ class AnswerFixtures extends Fixture implements DependentFixtureInterface
      */
     public function load(ObjectManager $manager): void
     {
-        // Récupère les QCM
+        // Récupère les Quiz
         $qcmScrum = $this->qcmRepository->findOneBy(['nom' => 'Quiz Scrum']);
         $qcmAgile = $this->qcmRepository->findOneBy(['nom' => 'Quiz Agile']);
         $qcmKanban = $this->qcmRepository->findOneBy(['nom' => 'Quiz Kanban']);
 
-        // ===== RÉPONSES POUR QCM SCRUM =====
+        // ===== RÉPONSES POUR Quiz SCRUM =====
         if ($qcmScrum) {
             // Question 1: "Qu'est-ce qu'un Sprint dans Scrum?"
             $this->createQuestionWithAnswers($manager, $qcmScrum, "Qu'est-ce qu'un Sprint dans Scrum?", [
@@ -93,7 +93,7 @@ class AnswerFixtures extends Fixture implements DependentFixtureInterface
             ]);
         }
 
-        // ===== RÉPONSES POUR QCM AGILE =====
+        // ===== RÉPONSES POUR Quiz AGILE =====
         if ($qcmAgile) {
             // Question 1: "Quel est le principe fondamental d'Agile?"
             $this->createQuestionWithAnswers($manager, $qcmAgile, "Quel est le principe fondamental d'Agile?", [
@@ -117,7 +117,7 @@ class AnswerFixtures extends Fixture implements DependentFixtureInterface
             ]);
         }
 
-        // ===== RÉPONSES POUR QCM KANBAN =====
+        // ===== RÉPONSES POUR Quiz KANBAN =====
         if ($qcmKanban) {
             // Question 1: "Qu'est-ce que Kanban?"
             $this->createQuestionWithAnswers($manager, $qcmKanban, "Qu'est-ce que Kanban?", [
@@ -143,13 +143,13 @@ class AnswerFixtures extends Fixture implements DependentFixtureInterface
      * (Remplace l'ancienne méthode createResponse pour s'adapter à la nouvelle structure)
      *
      * @param ObjectManager $manager Le gestionnaire Doctrine
-     * @param QCM $qcm Le QCM auquel la question appartient
+     * @param Quiz $qcm Le Quiz auquel la question appartient
      * @param string $questionText Le libellé de la question
      * @param array $answersData Tableau des réponses [['text' => '...', 'isCorrect' => bool], ...]
      *
      * @return void
      */
-    private function createQuestionWithAnswers(ObjectManager $manager, QCM $qcm, string $questionText, array $answersData): void
+    private function createQuestionWithAnswers(ObjectManager $manager, Quiz $qcm, string $questionText, array $answersData): void
     {
         // 1. Création de la Question
         $question = new Question();

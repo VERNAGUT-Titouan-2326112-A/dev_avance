@@ -12,14 +12,14 @@ use ApiPlatform\Metadata\Delete;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Attribute\Groups; // 👈 AJOUTÉ
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  * Entité Course - Représente un cours dans le système
  *
  * Cette entité gère la structure d'un cours avec ses informations générales
  * (titre, description, matière, niveau) ainsi que ses ressources associées
- * (vidéos, documents, QCM). Elle expose une API REST complète pour les opérations CRUD.
+ * (vidéos, documents, Quiz). Elle expose une API REST complète pour les opérations CRUD.
  *
  * Groupes de sérialisation:
  * - course:read: Utilisé pour la sérialisation (lecture) des cours
@@ -34,8 +34,8 @@ use Symfony\Component\Serializer\Attribute\Groups; // 👈 AJOUTÉ
         new Put(description: 'Met à jour un cours existant'),
         new Delete(description: 'Supprime un cours'),
     ],
-    normalizationContext: ['groups' => ['course:read']],     // 👈 AJOUTÉ
-    denormalizationContext: ['groups' => ['course:write']]   // 👈 AJOUTÉ
+    normalizationContext: ['groups' => ['course:read']],  
+    denormalizationContext: ['groups' => ['course:write']]  
 )]
 class Course
 {
@@ -46,7 +46,7 @@ class Course
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['course:read'])] // 👈 AJOUTÉ
+    #[Groups(['course:read'])]
     private ?int $id = null;
 
     /**
@@ -55,7 +55,7 @@ class Course
      * Chaîne de caractères limité à 255 caractères
      */
     #[ORM\Column(length: 255)]
-    #[Groups(['course:read', 'course:write'])] // 👈 AJOUTÉ
+    #[Groups(['course:read', 'course:write'])]
     private ?string $title = null;
 
     /**
@@ -64,7 +64,7 @@ class Course
      * Texte long sans limite de caractères (type TEXT en base de données)
      */
     #[ORM\Column(type: 'text', nullable: true)]
-    #[Groups(['course:read', 'course:write'])] // 👈 AJOUTÉ
+    #[Groups(['course:read', 'course:write'])]
     private ?string $description = null;
 
     /**
@@ -73,7 +73,7 @@ class Course
      * Chaîne de caractères limité à 255 caractères
      */
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['course:read', 'course:write'])] // 👈 AJOUTÉ
+    #[Groups(['course:read', 'course:write'])] 
     private ?string $subject = null;
 
     /**
@@ -82,7 +82,7 @@ class Course
      * Chaîne de caractères limité à 255 caractères
      */
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['course:read', 'course:write'])] // 👈 AJOUTÉ
+    #[Groups(['course:read', 'course:write'])] 
     private ?string $level = null;
 
     /**
@@ -90,7 +90,7 @@ class Course
      * Enregistrée automatiquement à la création du cours
      */
     #[ORM\Column(type: 'datetime_immutable')]
-    #[Groups(['course:read'])] // 👈 AJOUTÉ
+    #[Groups(['course:read'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     /**
@@ -98,18 +98,18 @@ class Course
      * Mise à jour automatiquement à chaque modification
      */
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    #[Groups(['course:read'])] // 👈 AJOUTÉ
+    #[Groups(['course:read'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     /**
-     * Collection des QCM associés à ce cours
-     * Relation "un-à-plusieurs" : un cours peut avoir plusieurs QCM
-     * La suppression du cours ne supprime pas les QCM (cascade:persist uniquement)
+     * Collection des Quiz associés à ce cours
+     * Relation "un-à-plusieurs" : un cours peut avoir plusieurs Quiz
+     * La suppression du cours ne supprime pas les Quiz (cascade:persist uniquement)
      *
-     * @var Collection<int, QCM>
+     * @var Collection<int, Quiz>
      */
-    #[ORM\OneToMany(targetEntity: QCM::class, mappedBy: 'course', orphanRemoval: true)]
-    #[Groups(['course:read', 'course:write'])] // 👈 AJOUTÉ
+    #[ORM\OneToMany(targetEntity: Quiz::class, mappedBy: 'course', orphanRemoval: true, cascade: ['persist'])]
+    #[Groups(['course:read', 'course:write'])] 
     private Collection $qcms;
 
 
@@ -121,7 +121,7 @@ class Course
      * @var Collection<int, Video>
      */
     #[ORM\OneToMany(targetEntity: Video::class, mappedBy: 'course', cascade: ['persist'], orphanRemoval: true)]
-    #[Groups(['course:read', 'course:write'])] // 👈 AJOUTÉ
+    #[Groups(['course:read', 'course:write'])]
     private Collection $videos;
 
     /**
@@ -132,7 +132,7 @@ class Course
      * @var Collection<int, Document>
      */
     #[ORM\OneToMany(targetEntity: Document::class, mappedBy: 'course', cascade: ['persist'], orphanRemoval: true)]
-    #[Groups(['course:read', 'course:write'])] // 👈 AJOUTÉ
+    #[Groups(['course:read', 'course:write'])]
     private Collection $documents;
 
     /**
@@ -143,12 +143,12 @@ class Course
      */
     #[ORM\ManyToOne(targetEntity: Teacher::class)]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(['course:read', 'course:write'])] // 👈 AJOUTÉ
+    #[Groups(['course:read', 'course:write'])] 
     private ?Teacher $teacher = null;
 
     /**
      * Constructeur de l'entité Course
-     * Initialise les collections vides pour les QCM
+     * Initialise les collections vides pour les Quiz
      */
     public function __construct()
     {
@@ -285,9 +285,9 @@ class Course
     }
 
     /**
-     * Récupère tous les QCM associés à ce cours
+     * Récupère tous les Quiz associés à ce cours
      *
-     * @return Collection<int, QCM> Collection d'objets QCM
+     * @return Collection<int, Quiz> Collection d'objets Quiz
      */
     public function getQcms(): Collection
     {
@@ -295,13 +295,13 @@ class Course
     }
 
     /**
-     * Ajoute un QCM au cours
+     * Ajoute un Quiz au cours
      * Évite les doublons et maintient la relation bidirectionnelle
      *
-     * @param QCM $qcm Le QCM à ajouter
+     * @param Quiz $qcm Le Quiz à ajouter
      * @return static Instance courante pour permettre l'appel en chaîne
      */
-    public function addQcm(QCM $qcm): static
+    public function addQcm(Quiz $qcm): static
     {
         if (!$this->qcms->contains($qcm)) {
             $this->qcms->add($qcm);
@@ -312,13 +312,13 @@ class Course
     }
 
     /**
-     * Retire un QCM du cours
+     * Retire un Quiz du cours
      * Maintient la cohérence de la relation bidirectionnelle
      *
-     * @param QCM $qcm Le QCM à retirer
+     * @param Quiz $qcm Le Quiz à retirer
      * @return static Instance courante pour permettre l'appel en chaîne
      */
-    public function removeQcm(QCM $qcm): static
+    public function removeQcm(Quiz $qcm): static
     {
         if ($this->qcms->removeElement($qcm)) {
             if ($qcm->getCourse() === $this) {
@@ -421,7 +421,7 @@ class Course
 
     /**
      * Retire un document du cours
-     *
+     *// 👈 AJOUTÉ
      * @param Document $document Le document à retirer
      * @return static Instance courante pour permettre l'appel en chaîne
      */

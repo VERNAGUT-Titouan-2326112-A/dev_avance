@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
- * Entité Answer - Représente une réponse possible à une question QCM
+ * Entité Answer - Représente une réponse possible à une question Quiz
  *
  * Cette entité gère les réponses (correctes ou incorrectes) proposées pour chaque question.
  * Chaque réponse a un texte et un flag indiquant si elle est correcte.

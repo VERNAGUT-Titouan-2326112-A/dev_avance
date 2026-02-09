@@ -8,7 +8,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * Repository pour l'entité QuizAttempt
- * Fournit des méthodes personnalisées pour accéder aux tentatives de QCM
+ * Fournit des méthodes personnalisées pour accéder aux tentatives de Quiz
  */
 class QuizAttemptRepository extends ServiceEntityRepository
 {

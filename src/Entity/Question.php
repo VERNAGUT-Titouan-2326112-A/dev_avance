@@ -15,9 +15,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
- * Entité Question - Représente une question d'un QCM
+ * Entité Question - Représente une question d'un Quiz
  *
- * Cette entité gère les questions d'un QCM avec leur texte et le type de question.
+ * Cette entité gère les questions d'un Quiz avec leur texte et le type de question.
  * Une question peut avoir plusieurs réponses possibles (Answer).
  * Une seule réponse est correcte.
  *
@@ -73,7 +73,7 @@ class Question
     private ?int $points = 1;
 
     /**
-     * Ordre de la question dans le QCM
+     * Ordre de la question dans le Quiz
      * Permet de conserver l'ordre des questions
      */
     #[ORM\Column(nullable: true)]
@@ -81,13 +81,13 @@ class Question
     private ?int $orderQuestion = null;
 
     /**
-     * QCM auquel cette question appartient
+     * Quiz auquel cette question appartient
      * Relation "plusieurs-à-un"
      */
-    #[ORM\ManyToOne(targetEntity: QCM::class, inversedBy: 'questions')]
+    #[ORM\ManyToOne(targetEntity: Quiz::class, inversedBy: 'questions')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['question:write'])]
-    private ?QCM $qcm = null;
+    private ?Quiz $qcm = null;
 
     /**
      * Collection des réponses possibles à cette question
@@ -154,12 +154,12 @@ class Question
         return $this;
     }
 
-    public function getQcm(): ?QCM
+    public function getQcm(): ?Quiz
     {
         return $this->qcm;
     }
 
-    public function setQcm(?QCM $qcm): static
+    public function setQcm(?Quiz $qcm): static
     {
         $this->qcm = $qcm;
         return $this;
