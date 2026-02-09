@@ -19,10 +19,10 @@
             <h5 class="p-2 mb-2 bg-primary text-white rounded" style="margin: 0 0 1% 0">
                 Modern Learning Platform 📕
             </h5>
-            <button type="button" class="btn btn-primary" style="margin: 0 1% 0 0" data-bs-toggle="modal" data-bs-target="#manageDashboardModal">
-                Manage Dashboard ✏️
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createCourseModal">
+                Créer un cours 📝
             </button>
-            <a class="btn btn-primary" style="margin: 0 1% 0 0" href="{{ path('app_login') }}">DashBoard 🗓️</a>
+            <a class="btn btn-primary" style="margin: 0 1% 0 0" href="{{ path('dashboard') }}">DashBoard 🗓️</a>
             {% if app.user %}
             <a class="btn btn-danger" style="margin: 0 1% 0 0" href="{{ path('app_logout') }}">Logout</a>
             {% else %}
@@ -30,22 +30,38 @@
             {% endif %}
         </nav>
     </header>
-    <div class="modal fade" id="manageDashboardModal" tabindex="-1" aria-labelledby="manageDashboardModalLabel" aria-hidden="true">
+    <div class="modal fade" id="createCourseModal" tabindex="-1" aria-labelledby="createCourseModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h5 class="modal-title" id="manageDashboardModalLabel">Manage Dashboard</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="createCourseModalLabel">Créer un nouveau cours</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                 </div>
 
                 <div class="modal-body">
-                    <p>Voulez-vous vous connecter pour gérer le dashboard ?</p>
+                    <form method="post" action="{{ path('create_dashboard') }}">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Titre du cours</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Matière</label>
+                            <input type="text" class="form-control" id="subject" name="subject">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="level" class="form-label">Niveau</label>
+                            <input type="text" class="form-control" id="level" name="level">
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Créer</button>
+                    </form>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <a href="{{ path('app_login') }}" class="btn btn-primary">Se connecter</a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                 </div>
 
             </div>

@@ -1,0 +1,159 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dash Board{% endblock %}
+
+{% block body %}
+    <style>
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #3498db;
+            color: #fff;
+            font-size: 20px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: background 0.2s;
+            margin: 1% 0 0 1%;
+        }
+        .back-button:hover { background: #2980b9; }
+    </style>
+
+    {# Navigation #}
+    {% if is_granted('ROLE_STUDENT') %}
+        <a href="{{ path('app_student_home') }}" class="back-button">&#8592;</a>
+    {% elseif is_granted('ROLE_TEACHER') %}
+        <a href="{{ path('app_teacher_home') }}" class="back-button">&#8592;</a>
+        <button type="button" class="btn btn-success ms-3" data-bs-toggle="modal" data-bs-target="#createCourseModal">
+            Créer un cours
+        </button>
+    {% endif %}
+
+    <table class="table table-striped mt-4">
+        <thead>
+        <tr>
+            <th>Titre</th>
+            <th>Matière</th>
+            <th>Niveau</th>
+            <th>Professeur</th>
+            <th>Créé le</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for course in courses %}
+            <tr>
+                <td>{{ course.title }}</td>
+                <td>{{ course.subject ?? '—' }}</td>
+                <td>{{ course.level ?? '—' }}</td>
+                <td>{{ course.teacher ? course.teacher.name : '—' }}</td>
+                <td>{{ course.createdAt|date('d/m/Y H:i') }}</td>
+                <td>
+                    <div class="d-flex gap-2">
+                        {# Bouton MAJ - Notez l'attribut data-url #}
+                        <button type="button"
+                                class="btn btn-primary btn-sm btn-edit"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editCourseModal"
+                                data-url="{{ path('app_course_edit', {'id': course.id}) }}">
+                            MAF
+                        </button>
+
+                        {# Formulaire de Suppression #}
+                        <form method="post" action="{{ path('app_course_delete', {'id': course.id}) }}" onsubmit="return confirm('Supprimer ce cours ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ course.id) }}">
+                            <button class="btn btn-danger btn-sm">Supprimer</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="6">Aucun cours trouvé</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+    {# 1. Modal Création #}
+    <div class="modal fade" id="createCourseModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" action="{{ path('create_dashboard') }}">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Créer un nouveau cours</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Titre du cours</label>
+                            <input type="text" class="form-control" name="title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Matière</label>
+                            <input type="text" class="form-control" name="subject">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Niveau</label>
+                            <input type="text" class="form-control" name="level">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                        <button type="submit" class="btn btn-success">Créer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {# 2. Modal Edition (Unique et vide au départ) #}
+    <div class="modal fade" id="editCourseModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modifier le cours</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div id="modal-edit-body" class="modal-body">
+                    <div class="text-center">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <p>Chargement du formulaire...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# --- LE JAVASCRIPT --- #}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const editButtons = document.querySelectorAll('.btn-edit');
+            const modalBody = document.getElementById('modal-edit-body');
+
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const url = this.getAttribute('data-url');
+
+                    // Reset du body avec un loader
+                    modalBody.innerHTML = '<div class="text-center"><div class="spinner-border text-primary"></div></div>';
+
+                    // Chargement du formulaire via AJAX
+                    fetch(url, {
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    })
+                        .then(response => response.text())
+                        .then(html => {
+                            modalBody.innerHTML = html;
+                        })
+                        .catch(err => {
+                            modalBody.innerHTML = '<div class="alert alert-danger">Erreur lors du chargement.</div>';
+                        });
+                });
+            });
+        });
+    </script>
+{% endblock %}

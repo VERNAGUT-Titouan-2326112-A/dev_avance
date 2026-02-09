@@ -2,8 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Course;
+use App\Repository\CourseRepository;
 use App\Repository\DocumentRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -19,10 +23,12 @@ use Symfony\Component\Routing\Attribute\Route;
 class UserController extends AbstractController
 {
     private DocumentRepository $documentRepository;
+    private CourseRepository $courseRepository;
 
-    public function __construct(DocumentRepository $documentRepository)
+    public function __construct(DocumentRepository $documentRepository, CourseRepository $courseRepository)
     {
         $this->documentRepository = $documentRepository;
+        $this->courseRepository = $courseRepository;
     }
     /**
      * Affiche la page d'accueil de l'application.

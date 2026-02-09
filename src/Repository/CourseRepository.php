@@ -16,4 +16,21 @@ class CourseRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Course::class);
     }
+
+    public function save(Course $course, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($course);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+    public function remove(Course $course, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($course);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
 }
