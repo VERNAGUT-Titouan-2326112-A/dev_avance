@@ -6,83 +6,106 @@ import QuizCard from "../components/QuizCard.jsx";
 export default function Quiz({ userId }) {
     const { id } = useParams();
     const navigate = useNavigate();
-
     const [quiz, setQuiz] = useState(null);
     const [answers, setAnswers] = useState({});
 
+    // Pour l'affichage du bilan final comme sur la maquette
+    const [showSummary, setShowSummary] = useState(false);
+    const [summaryData, setSummaryData] = useState({ score: 0, details: [] });
+
     useEffect(() => {
-        getQuiz(id).then(data => {
-            console.log("CHARGEMENT QUIZ - Données brutes reçues :", data);
-            setQuiz(data);
-        });
+        getQuiz(id).then(setQuiz);
     }, [id]);
 
     const handleSubmit = async () => {
         if (!quiz || !quiz.questions) return;
 
-        console.log("--- DÉBUT DU CALCUL ---");
         let calculatedScore = 0;
-        const totalQuestions = quiz.questions.length;
+        const details = []; // Pour stocker le Vrai/Faux par question
 
         quiz.questions.forEach((question) => {
-            // 1. Récupération de la réponse utilisateur (String pour être sûr)
             const userAnswerId = answers[question.id] || answers[String(question.id)];
+            const correctAnswer = question.answers.find((a) =>
+                a.correct === true || a.isCorrect === true
+            );
 
-            console.log(`Question ID: ${question.id}`);
-            console.log(`> Réponse choisie par l'utilisateur :`, userAnswerId);
+            const isCorrect = correctAnswer && userAnswerId != null && String(userAnswerId) === String(correctAnswer.id);
 
-            // 2. Recherche de la bonne réponse dans les données du quiz
-            // On accepte 'correct' (JSON API) OU 'isCorrect' (au cas où)
-            // On accepte true (bool) OU 1 (int)
-            const correctAnswer = question.answers.find((a) => {
-                const isIt = a.correct === true || a.correct === 1 || a.isCorrect === true || a.isCorrect === 1;
-                if (isIt) console.log(`> Bonne réponse trouvée dans les données : ID ${a.id} (correct=${a.correct}, isCorrect=${a.isCorrect})`);
-                return isIt;
+            if (isCorrect) calculatedScore++;
+
+            // On prépare le détail pour la maquette
+            details.push({
+                questionText: question.text,
+                isCorrect: isCorrect
             });
-
-            if (!correctAnswer) {
-                console.error(`> ERREUR CRITIQUE : Aucune réponse marquée comme "correct" ou "isCorrect" pour la question ${question.id} !`);
-            }
-
-            // 3. Comparaison
-            if (correctAnswer && userAnswerId != null) {
-                // Comparaison souple (==) pour gérer "25" == 25
-                if (userAnswerId == correctAnswer.id) {
-                    console.log("> RÉSULTAT : ✅ GAGNÉ (+1 point)");
-                    calculatedScore++;
-                } else {
-                    console.log(`> RÉSULTAT : ❌ PERDU (Comparaison: ${userAnswerId} != ${correctAnswer.id})`);
-                }
-            } else {
-                console.log("> RÉSULTAT : ⚠️ PAS DE RÉPONSE ou DONNÉE MANQUANTE");
-            }
-            console.log("-----------------------");
         });
 
-        const finalScore = totalQuestions > 0
-            ? Math.round((calculatedScore / totalQuestions) * 20)
-            : 0;
-
-        console.log(`SCORE FINAL CALCULÉ : ${finalScore}/20`);
+        setSummaryData({ score: calculatedScore, details: details });
+        setShowSummary(true);
 
         try {
-            await submitQuiz(id, finalScore, answers, userId);
-            alert(`Score: ${finalScore}/20. Sauvegardé avec succès !`);
-            navigate('/results');
+            await submitQuiz(id, calculatedScore, answers, userId);
         } catch (error) {
-            console.error("Erreur API:", error.response?.data);
-            alert("Erreur lors de la sauvegarde.");
+            console.error(error.response?.data);
         }
     };
 
-    if (!quiz) return <div className="p-6">Chargement...</div>;
+    if (!quiz) return <div className="p-6 text-center">Chargement du contenu pédagogique...</div>;
 
+    // Rendu du Bilan (Maquette EduLearn)
+    if (showSummary) {
+        return (
+            <div className="p-6 max-w-4xl mx-auto bg-white shadow-lg rounded-lg mt-10">
+                <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                    📊 Bilan du Quiz : {quiz.nom}
+                </h2>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <div className="p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
+                        <p className="text-sm text-blue-600 font-semibold uppercase">Questions</p>
+                        <p className="text-2xl font-bold">{quiz.questions.length}</p>
+                    </div>
+                    <div className="p-4 bg-green-50 border-l-4 border-green-500 rounded">
+                        <p className="text-sm text-green-600 font-semibold uppercase">Correctes</p>
+                        <p className="text-2xl font-bold">{summaryData.score}</p>
+                    </div>
+                    <div className="p-4 bg-red-50 border-l-4 border-red-500 rounded">
+                        <p className="text-sm text-red-600 font-semibold uppercase">Incorrectes</p>
+                        <p className="text-2xl font-bold">{quiz.questions.length - summaryData.score}</p>
+                    </div>
+                </div>
+
+                <div className="space-y-3 mb-8">
+                    <h3 className="font-bold border-bottom pb-2">Détail des questions :</h3>
+                    {summaryData.details.map((item, idx) => (
+                        <div key={idx} className="flex justify-between items-center p-3 bg-gray-50 rounded border">
+                            <span className="text-sm font-medium">Question {idx + 1}: {item.questionText}</span>
+                            {item.isCorrect ? (
+                                <span className="text-green-600 font-bold flex items-center gap-1">✅ Correcte</span>
+                            ) : (
+                                <span className="text-red-600 font-bold flex items-center gap-1">❌ Incorrecte</span>
+                            )}
+                        </div>
+                    ))}
+                </div>
+
+                <button
+                    onClick={() => navigate('/results')}
+                    className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition"
+                >
+                    Voir tous mes résultats
+                </button>
+            </div>
+        );
+    }
+
+    // Rendu du Quiz normal
     return (
         <div className="p-6">
             <h1 className="text-3xl font-bold mb-2">{quiz.nom}</h1>
             <p className="text-gray-600 mb-6">{quiz.theme}</p>
 
-            {quiz.questions && quiz.questions.map((q) => (
+            {quiz.questions.map((q) => (
                 <QuizCard
                     key={q.id}
                     question={q}
@@ -93,7 +116,7 @@ export default function Quiz({ userId }) {
 
             <button
                 onClick={handleSubmit}
-                className="mt-6 bg-blue-600 text-white px-6 py-2 rounded w-full"
+                className="mt-6 bg-blue-600 text-white px-6 py-2 rounded w-full hover:bg-blue-700 transition"
             >
                 Terminer le Quiz et enregistrer ma note
             </button>
