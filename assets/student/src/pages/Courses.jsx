@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getCourses } from "../api/courses";
-import CourseCard from "../components/CourseCard";
+import { getCourses } from "../api/courses.js";
+import CourseCard from "../components/CourseCard.jsx";
 
 export default function Courses() {
     const [courses, setCourses] = useState([]);
@@ -14,9 +14,13 @@ export default function Courses() {
             <h1 className="text-3xl font-bold mb-6">Mes cours</h1>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {courses.map((course) => (
-                    <CourseCard key={course.id} course={course} />
-                ))}
+                {Array.isArray(courses) && courses.length > 0 ? (
+                    courses.map((course) => (
+                        <CourseCard key={course.id} course={course} />
+                    ))
+                ) : (
+                    <p>Aucun cours trouvé ou chargement...</p>
+                )}
             </div>
         </div>
     );

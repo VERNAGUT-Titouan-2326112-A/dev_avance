@@ -3,9 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  * User
@@ -38,6 +42,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\InheritanceType('SINGLE_TABLE')]
 #[ORM\DiscriminatorColumn(name: 'discr', type: 'string')]
 #[ORM\DiscriminatorMap(['user' => User::class, 'student' => Student::class, 'teacher' => Teacher::class])]
+#[ApiResource(
+    operations: [
+        new Get(description: 'Récupère un utilisateur'),
+        new GetCollection(description: 'Liste des utilisateurs')
+    ],
+    normalizationContext: ['groups' => ['user:read']]
+)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
@@ -47,6 +58,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['user:read', 'quiz:read'])]
     private ?int $id = null;
 
     /**
@@ -54,6 +66,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * Utilisée comme identifiant pour la connexion et comme clé unique en base de données.
      */
     #[ORM\Column(length: 180)]
+    #[Groups(['user:read'])]
     private ?string $email = null;
 
     /**
@@ -66,6 +79,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var list<string> Les rôles de l'utilisateur
      */
     #[ORM\Column]
+    #[Groups(['user:read'])]
     private array $roles = [];
 
     /**
@@ -82,12 +96,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * Prénom de l'utilisateur.
      */
     #[ORM\Column(length: 255)]
+    #[Groups(['user:read', 'quiz:read'])]
     private ?string $name = null;
 
     /**
      * Nom de famille de l'utilisateur.
      */
     #[ORM\Column(length: 255)]
+    #[Groups(['user:read', 'quiz:read'])]
     private ?string $lastName = null;
 
     /**

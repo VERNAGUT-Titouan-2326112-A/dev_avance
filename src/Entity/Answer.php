@@ -42,7 +42,7 @@ class Answer
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['answer:read', 'answer:write', 'question:read', 'question:write', 'qcm:read', 'qcm:write'])]
+    #[Groups(['answer:read', 'answer:write', 'question:read', 'question:write', 'quiz:read', 'quiz:write'])]
     private ?int $id = null;
 
     /**
@@ -50,7 +50,7 @@ class Answer
      * Exemple: "Paris", "Madrid", "Londres"
      */
     #[ORM\Column(type: 'text')]
-    #[Groups(['answer:read', 'answer:write', 'question:read', 'question:write', 'qcm:read', 'qcm:write'])]
+    #[Groups(['answer:read', 'answer:write', 'question:read', 'question:write', 'quiz:read', 'quiz:write'])]
     private ?string $text = null;
 
     /**
@@ -58,7 +58,7 @@ class Answer
      * true = réponse correcte, false = réponse incorrecte
      */
     #[ORM\Column]
-    #[Groups(['answer:read', 'answer:write', 'question:read', 'question:write', 'qcm:read', 'qcm:write'])]
+    #[Groups(['answer:read', 'answer:write', 'question:read', 'question:write', 'quiz:read', 'qcm:read', 'quiz:write'])]
     private bool $isCorrect = false;
 
     /**
@@ -66,7 +66,7 @@ class Answer
      * Permet de conserver l'ordre des réponses
      */
     #[ORM\Column(nullable: true)]
-    #[Groups(['answer:read', 'answer:write', 'question:read', 'question:write', 'qcm:read', 'qcm:write'])]
+    #[Groups(['answer:read', 'answer:write', 'question:read', 'question:write', 'quiz:read', 'quiz:write'])]
     private ?int $orderAnswer = null;
 
     /**
@@ -94,6 +94,8 @@ class Answer
         return $this;
     }
 
+    // C'EST ICI LA CORRECTION : Ajout des groupes sur le getter pour forcer la lecture
+    #[Groups(['answer:read', 'answer:write', 'question:read', 'question:write', 'quiz:read', 'qcm:read', 'quiz:write'])]
     public function isCorrect(): bool
     {
         return $this->isCorrect;

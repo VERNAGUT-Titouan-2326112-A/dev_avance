@@ -45,7 +45,7 @@ class Question
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['question:read', 'question:write', 'qcm:read'])]
+    #[Groups(['question:read', 'question:write', 'quiz:read'])]
     private ?int $id = null;
 
     /**
@@ -53,7 +53,7 @@ class Question
      * Exemple: "Quel est la capitale de la France?"
      */
     #[ORM\Column(type: 'text')]
-    #[Groups(['question:read', 'question:write', 'qcm:read'])]
+    #[Groups(['question:read', 'question:write', 'quiz:read'])]
     private ?string $text = null;
 
     /**
@@ -61,7 +61,7 @@ class Question
      * Valeurs: "multiple_choice", "true_false", "short_answer"
      */
     #[ORM\Column(length: 50, nullable: true)]
-    #[Groups(['question:read', 'question:write', 'qcm:read'])]
+    #[Groups(['question:read', 'question:write', 'quiz:read'])]
     private ?string $type = null;
 
     /**
@@ -69,7 +69,7 @@ class Question
      * Par défaut: 1 point
      */
     #[ORM\Column(nullable: true)]
-    #[Groups(['question:read', 'question:write', 'qcm:read'])]
+    #[Groups(['question:read', 'question:write', 'quiz:read'])]
     private ?int $points = 1;
 
     /**
@@ -77,7 +77,7 @@ class Question
      * Permet de conserver l'ordre des questions
      */
     #[ORM\Column(nullable: true)]
-    #[Groups(['question:read', 'question:write', 'qcm:read'])]
+    #[Groups(['question:read', 'question:write', 'quiz:read'])]
     private ?int $orderQuestion = null;
 
     /**
@@ -96,7 +96,7 @@ class Question
      * @var Collection<int, Answer>
      */
     #[ORM\OneToMany(targetEntity: Answer::class, mappedBy: 'question', cascade: ['persist'], orphanRemoval: true)]
-    #[Groups(['question:read', 'question:write', 'qcm:read', 'qcm:write'])] // 👈 AJOUT DE qcm:read/write
+    #[Groups(['question:read', 'question:write', 'qcm:read', 'quiz:read', 'qcm:write'])]
     private Collection $answers;
 
     public function __construct()
