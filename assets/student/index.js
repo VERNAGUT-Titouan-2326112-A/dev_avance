@@ -4,10 +4,10 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
 
-import Courses from './src/pages/Courses';
-import Quiz from './src/pages/Quiz';
-import MyResults from './src/pages/MyResults';
-import CourseDetail from './src/pages/CourseDetail';
+import Courses from './src/pages/Courses.jsx';
+import Quiz from './src/pages/Quiz.jsx';
+import MyResults from './src/pages/MyResults.jsx';
+import CourseDetail from './src/pages/CourseDetail.jsx';
 
 function App() {
     return (

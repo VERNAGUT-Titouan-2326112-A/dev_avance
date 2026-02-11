@@ -21,13 +21,13 @@ use Symfony\Component\Serializer\Attribute\Groups;
  * et ses questions associées. Elle expose une API REST complète pour les opérations CRUD.
  *
  * Groupes de sérialisation:
- * - qcm:read: Utilisé pour la sérialisation (lecture) des Quiz
- * - qcm:write: Utilisé pour la désérialisation (écriture) des Quiz
+ * - quiz:read: Utilisé pour la sérialisation (lecture) des Quiz
+ * - quiz:write: Utilisé pour la désérialisation (écriture) des Quiz
  */
 #[ORM\Entity(repositoryClass: QuizRepository::class)]
-#[ORM\Table(name: 'qcm')]
+#[ORM\Table(name: 'quiz')]
 #[ApiResource(
-    shortName: 'qcm',
+    shortName: 'Quiz',
     operations: [
         new GetCollection(description: 'Récupère la liste de tous les Quiz'),
         new Get(description: 'Récupère un Quiz spécifique avec ses questions'),
@@ -35,8 +35,8 @@ use Symfony\Component\Serializer\Attribute\Groups;
         new Put(description: 'Met à jour un Quiz'),
         new Delete(description: 'Supprime un Quiz'),
     ],
-    normalizationContext: ['groups' => ['qcm:read']],
-    denormalizationContext: ['groups' => ['qcm:write']]
+    normalizationContext: ['groups' => ['quiz:read']],
+    denormalizationContext: ['groups' => ['quiz:write']]
 )]
 class Quiz
 {
@@ -47,7 +47,7 @@ class Quiz
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['qcm:read'])]
+    #[Groups(['quiz:read'])]
     private ?int $id = null;
 
     /**
@@ -55,7 +55,7 @@ class Quiz
      * Chaîne de caractères limité à 255 caractères
      */
     #[ORM\Column(length: 255)]
-    #[Groups(['qcm:read', 'qcm:write'])]
+    #[Groups(['quiz:read', 'quiz:write'])]
     private ?string $theme = null;
 
     /**
@@ -63,7 +63,7 @@ class Quiz
      * Valeur entière représentant le nombre de points possibles
      */
     #[ORM\Column]
-    #[Groups(['qcm:read', 'qcm:write'])]
+    #[Groups(['quiz:read', 'quiz:write'])]
     private ?int $note = null;
 
     /**
@@ -71,7 +71,7 @@ class Quiz
      * Chaîne de caractères limité à 255 caractères
      */
     #[ORM\Column(length: 255)]
-    #[Groups(['qcm:read', 'qcm:write'])]
+    #[Groups(['quiz:read', 'quiz:write'])]
     private ?string $nom = null;
 
     /**
@@ -82,7 +82,7 @@ class Quiz
      */
     #[ORM\ManyToOne(targetEntity: Course::class, inversedBy: 'qcms')]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(['qcm:read', 'qcm:write'])]
+    #[Groups(['quiz:read', 'quiz:write'])]
     private ?Course $course = null;
 
     /**
@@ -92,7 +92,7 @@ class Quiz
      * @var Collection<int, Question>
      */
     #[ORM\OneToMany(targetEntity: Question::class, mappedBy: 'qcm', cascade: ['persist'], orphanRemoval: true)]
-    #[Groups(['qcm:read', 'qcm:write'])]
+    #[Groups(['quiz:read', 'quiz:write'])]
     private Collection $questions;
 
     public function __construct()
