@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="container mt-3">
-        <div id="react-student-app"></div>
+        <div id="react-student-app" data-user-id="{{ app.user ? app.user.id : '' }}"></div>
     </div>
 {% endblock %}
 

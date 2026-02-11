@@ -1,24 +1,31 @@
+import React from 'react';
 import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
-    const { user, logout } = useAuth();
+    const handleLogout = () => {
+        window.location.href = "/logout";
+    };
 
     return (
-        <nav className="bg-white shadow px-6 py-3 flex justify-between">
-            <Link to="/courses" className="font-bold text-blue-600">
-                EduLearn
+        <nav className="bg-white shadow px-6 py-4 flex justify-between items-center mb-6">
+            <Link to="/courses" className="font-bold text-xl text-blue-600 hover:text-blue-800 transition">
+                🎓 EduLearn
             </Link>
 
-            {user && (
-                <div className="flex gap-4 items-center">
-                    <Link to="/courses">Cours</Link>
-                    <Link to="/results">Résultats</Link>
-                    <button onClick={logout} className="text-red-500">
-                        Déconnexion
-                    </button>
-                </div>
-            )}
+            <div className="flex gap-6 items-center font-medium">
+                <Link to="/courses" className="text-gray-600 hover:text-blue-600 transition">
+                    Mes Cours
+                </Link>
+                <Link to="/results" className="text-gray-600 hover:text-blue-600 transition">
+                    Mes Résultats
+                </Link>
+                <button
+                    onClick={handleLogout}
+                    className="bg-red-50 text-red-600 px-4 py-2 rounded-full hover:bg-red-100 transition"
+                >
+                    Logout
+                </button>
+            </div>
         </nav>
     );
 }

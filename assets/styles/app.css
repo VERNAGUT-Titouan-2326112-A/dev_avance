@@ -1,17 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 body {
     background-color: #ffffff;
 }
-.title-login{
+
+.title-login {
     margin-top: 5%;
     text-align: center;
     color: #1e05f3;
     font-family: 'Arial', sans-serif;
 }
 
-.button_text{
+.button_text {
     text-align: center;
 }
+
 .container {
     display: flex;
     align-items: center;
@@ -76,6 +81,7 @@ body {
     padding: 10px 0px;
     position: relative;
 }
+
 .login_input {
     border: none;
     border-bottom: 2px solid #D1D1D4;
@@ -126,13 +132,15 @@ body {
     right: 0px;
     color: #fff;
 }
-.header{
+
+.header {
     background-color: #ffffff;
     text-align: center;
     font-family: 'Arial', sans-serif;
     padding: 10px 0;
 }
-.nav-to-header{
+
+.nav-to-header {
     text-align: center;
     color: #261f51;
     font-family: 'Arial', sans-serif;
@@ -140,6 +148,7 @@ body {
     display: flex;
     justify-content: space-between;
 }
+
 .timetable {
     width: 100%;
     border-collapse: collapse;
@@ -164,6 +173,7 @@ body {
 .timetable tr:hover {
     background-color: #f1f1f1;
 }
+
 .locked-card {
     overflow: hidden;
     position: relative;
@@ -192,4 +202,62 @@ body {
     background: rgba(0,0,0,0.5);
     padding: 10px;
     border-radius: 50%;
+}
+
+.student-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+    background-color: #1e05f3;
+    color: white !important;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none !important;
+    font-weight: bold;
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    background-color: #f3f4f6;
+    color: #374151 !important;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none !important;
+    font-weight: bold;
+    margin-right: 10px;
+    display: inline-block;
+}
+
+.badge-quiz {
+    background-color: #ede9fe;
+    color: #5b21b6;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+iframe {
+    width: 100%;
+    height: 600px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    margin-top: 15px;
+}
+
+video {
+    width: 100%;
+    max-height: 500px;
+    border-radius: 12px;
+    background-color: #000;
+    margin-top: 15px;
 }

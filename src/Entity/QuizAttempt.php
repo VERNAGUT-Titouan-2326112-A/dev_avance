@@ -17,7 +17,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
         new Get(),
         new Post(),
     ],
-    normalizationContext: ['groups' => ['attempt:read']],
+    normalizationContext: ['groups' => ['attempt:read', 'quiz:read']],
     denormalizationContext: ['groups' => ['attempt:write']]
 )]
 class QuizAttempt

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getCourses } from "../api/courses.js";
-import CourseCard from "../components/CourseCard";
+import CourseCard from "../components/CourseCard.jsx";
 
 export default function Courses() {
     const [courses, setCourses] = useState([]);

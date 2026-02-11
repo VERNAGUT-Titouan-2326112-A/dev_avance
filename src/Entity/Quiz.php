@@ -29,13 +29,13 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ApiResource(
     shortName: 'Quiz',
     operations: [
-        new GetCollection(description: 'Récupère la liste de tous les Quiz'),
-        new Get(description: 'Récupère un Quiz spécifique avec ses questions'),
-        new Post(description: 'Crée un nouveau Quiz'),
-        new Put(description: 'Met à jour un Quiz'),
-        new Delete(description: 'Supprime un Quiz'),
+        new GetCollection(uriTemplate: '/quiz', description: 'Récupère la liste de tous les Quiz'),
+        new Get(uriTemplate: '/quiz/{id}', description: 'Récupère un Quiz spécifique avec ses questions'),
+        new Post(uriTemplate: '/quiz', description: 'Crée un nouveau Quiz'),
+        new Put(uriTemplate: '/quiz/{id}', description: 'Met à jour un Quiz'),
+        new Delete(uriTemplate: '/quiz/{id}', description: 'Supprime un Quiz'),
     ],
-    normalizationContext: ['groups' => ['quiz:read']],
+    normalizationContext: ['groups' => ['quiz:read', 'question:read', 'answer:read', 'qcm:read']],
     denormalizationContext: ['groups' => ['quiz:write']]
 )]
 class Quiz
@@ -47,7 +47,7 @@ class Quiz
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['quiz:read'])]
+    #[Groups(['quiz:read', 'course:read', 'qcm:read'])]
     private ?int $id = null;
 
     /**
@@ -55,7 +55,7 @@ class Quiz
      * Chaîne de caractères limité à 255 caractères
      */
     #[ORM\Column(length: 255)]
-    #[Groups(['quiz:read', 'quiz:write'])]
+    #[Groups(['quiz:read', 'quiz:write', 'course:read', 'qcm:read'])]
     private ?string $theme = null;
 
     /**
@@ -63,7 +63,7 @@ class Quiz
      * Valeur entière représentant le nombre de points possibles
      */
     #[ORM\Column]
-    #[Groups(['quiz:read', 'quiz:write'])]
+    #[Groups(['quiz:read', 'quiz:write', 'qcm:read'])]
     private ?int $note = null;
 
     /**
@@ -71,7 +71,7 @@ class Quiz
      * Chaîne de caractères limité à 255 caractères
      */
     #[ORM\Column(length: 255)]
-    #[Groups(['quiz:read', 'quiz:write'])]
+    #[Groups(['quiz:read', 'quiz:write', 'course:read', 'qcm:read'])]
     private ?string $nom = null;
 
     /**
@@ -92,7 +92,7 @@ class Quiz
      * @var Collection<int, Question>
      */
     #[ORM\OneToMany(targetEntity: Question::class, mappedBy: 'qcm', cascade: ['persist'], orphanRemoval: true)]
-    #[Groups(['quiz:read', 'quiz:write'])]
+    #[Groups(['quiz:read', 'quiz:write', 'qcm:read'])]
     private Collection $questions;
 
     public function __construct()
