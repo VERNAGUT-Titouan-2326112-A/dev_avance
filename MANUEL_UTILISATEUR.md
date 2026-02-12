@@ -112,7 +112,7 @@ Cliquez sur "Faire le test".
 Répondez aux questions (Vrai/Faux ou Choix Multiples).
 
 Cliquez sur "Terminer le Quiz".
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
 Votre score est calculé instantanément (ex: 15/20) et enregistré définitivement.
 
 ### 4. Suivre sa progression
