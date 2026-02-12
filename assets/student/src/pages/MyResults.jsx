@@ -20,95 +20,166 @@ export default function MyResults({ userId }) {
         }
     }, [userId]);
 
-    const getGradeBadge = (score, total = 20) => {
-        const percentage = (score / total) * 100;
-        if (percentage >= 80) return <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">Excellent</span>;
-        if (percentage >= 60) return <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">Bien</span>;
-        if (percentage >= 50) return <span className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-bold">Moyen</span>;
-        return <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold">À améliorer</span>;
+    // --- CALCUL DES SCORES RÉELS ---
+    const calculateRealScore = (rawScore, totalQuestions) => {
+        // Si le score en base (ex: 20) est plus grand que le nombre de questions (ex: 3),
+        // c'est qu'il est sur 20. On fait la règle de trois.
+        if (totalQuestions > 0 && rawScore > totalQuestions) {
+            return Math.round((rawScore * totalQuestions) / 20);
+        }
+        return rawScore;
     };
 
-    if (loading) return <div className="p-6 text-center">Chargement de vos notes...</div>;
+    // --- BADGES COULEUR ---
+    const getBadgeStyle = (score, total) => {
+        const percentage = total > 0 ? (score / total) * 100 : 0;
+        if (percentage >= 80) return { bg: '#dcfce7', color: '#166534', label: 'Excellent' };
+        if (percentage >= 60) return { bg: '#dbeafe', color: '#1e40af', label: 'Bien' };
+        if (percentage >= 50) return { bg: '#fef9c3', color: '#854d0e', label: 'Moyen' };
+        return { bg: '#fee2e2', color: '#991b1b', label: 'À améliorer' };
+    };
+
+    if (loading) return <div style={{ padding: '50px', textAlign: 'center', color: '#666' }}>Chargement...</div>;
 
     return (
-        <div className="p-6 max-w-6xl mx-auto">
-            <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold flex items-center gap-3">
-                    Résultats des QCM
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px', fontFamily: "'Segoe UI', sans-serif" }}>
+
+            {/* --- STYLE FORCÉ (Pour écraser les conflits CSS) --- */}
+            <style>{`
+                /* TABLEAU */
+                .results-table { width: 100%; border-collapse: separate; border-spacing: 0; background: white; border-radius: 8px; overflow: hidden; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+                .results-thead { background-color: #0284c7; color: white; }
+                .results-th { padding: 16px; text-align: left; font-weight: 700; text-transform: uppercase; font-size: 13px; letter-spacing: 0.5px; }
+                .results-td { padding: 16px; border-bottom: 1px solid #f3f4f6; color: #1f2937; vertical-align: middle; }
+                .results-tr:hover { background-color: #f8fafc; }
+                
+                /* BOUTONS */
+                .btn-csv { background-color: #10b981 !important; color: white !important; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+                .btn-details { background: white; border: 1px solid #0284c7; color: #0284c7; padding: 6px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 13px; }
+                .btn-details:hover { background: #0284c7; color: white; }
+                .btn-close { background-color: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+
+                /* ZONE DÉTAILS */
+                .details-box { background-color: #f9fafb; padding: 20px; border-bottom: 1px solid #e5e7eb; }
+                .details-inner { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+                
+                /* CARTES STATS */
+                .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; }
+                .stat-card { background: white; padding: 15px; border-radius: 8px; border: 1px solid #e5e7eb; border-left-width: 5px; text-align: center; }
+                .stat-title { font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; }
+                .stat-num { font-size: 24px; font-weight: 900; color: #111827; }
+
+                /* LISTE QUESTIONS */
+                .q-list { border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+                .q-item { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #f3f4f6; background: #fff; font-size: 14px; }
+                .q-item:last-child { border-bottom: none; }
+                .q-correct { color: #166534; font-weight: 700; background: #dcfce7; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+                .q-incorrect { color: #991b1b; font-weight: 700; background: #fee2e2; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+            `}</style>
+
+            {/* EN-TÊTE */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
+                <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#111827', margin: 0 }}>
+                    📊 Résultats des QCM
                 </h1>
-                <button className="bg-emerald-500 text-white px-4 py-2 rounded shadow hover:bg-emerald-600 transition text-sm font-bold flex items-center gap-2">
-                    <span>Export en CSV</span>
-                </button>
+                <button className="btn-csv">📥 Exporter en CSV</button>
             </div>
 
-            <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-                <table className="w-full text-left border-collapse">
-                    <thead>
-                    <tr className="bg-blue-600 text-white">
-                        <th className="p-4 font-semibold uppercase text-sm">QCM</th>
-                        <th className="p-4 font-semibold uppercase text-sm text-center">Date</th>
-                        <th className="p-4 font-semibold uppercase text-sm text-center">Score</th>
-                        <th className="p-4 font-semibold uppercase text-sm text-center">Note</th>
-                        <th className="p-4 font-semibold uppercase text-sm text-center">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100">
-                    {results.map((r) => (
+            {/* TABLEAU */}
+            <table className="results-table">
+                <thead className="results-thead">
+                <tr>
+                    <th className="results-th">QCM</th>
+                    <th className="results-th">Date</th>
+                    <th className="results-th" style={{textAlign: 'center'}}>Score</th>
+                    <th className="results-th" style={{textAlign: 'center'}}>Note</th>
+                    <th className="results-th" style={{textAlign: 'center'}}>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {results.map((r) => {
+                    // 1. Calculs
+                    const totalQ = r.qcm?.questions?.length || 0;
+                    const realScore = calculateRealScore(r.score, totalQ);
+                    const badge = getBadgeStyle(realScore, totalQ);
+                    const isOpen = expandedRow === r.id;
+
+                    return (
                         <React.Fragment key={r.id}>
-                            <tr className="hover:bg-blue-50/50 transition-colors">
-                                <td className="p-4 font-medium text-gray-700">{r.qcm?.nom || "Quiz inconnu"}</td>
-                                <td className="p-4 text-center text-gray-500 text-sm">{new Date(r.submittedAt).toLocaleDateString()}</td>
-                                <td className="p-4 text-center font-bold text-gray-700">{r.score}/20</td>
-                                <td className="p-4 text-center">{getGradeBadge(r.score)}</td>
-                                <td className="p-4 text-center">
+                            <tr className="results-tr">
+                                <td className="results-td" style={{fontWeight: '600'}}>{r.qcm?.nom || "Quiz"}</td>
+                                <td className="results-td">{new Date(r.submittedAt).toLocaleDateString('fr-FR')}</td>
+                                <td className="results-td" style={{textAlign: 'center'}}>
+                                    <span style={{fontWeight: '900', fontSize: '16px'}}>{realScore}</span>
+                                    <span style={{color: '#9ca3af', fontSize: '13px'}}>/{totalQ}</span>
+                                </td>
+                                <td className="results-td" style={{textAlign: 'center'}}>
+                                        <span style={{ backgroundColor: badge.bg, color: badge.color, padding: '4px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: '800' }}>
+                                            {badge.label}
+                                        </span>
+                                </td>
+                                <td className="results-td" style={{textAlign: 'center'}}>
                                     <button
-                                        onClick={() => setExpandedRow(expandedRow === r.id ? null : r.id)}
-                                        className="text-blue-600 border border-blue-600 px-3 py-1 rounded text-xs font-bold hover:bg-blue-600 hover:text-white transition"
+                                        className="btn-details"
+                                        onClick={() => setExpandedRow(isOpen ? null : r.id)}
                                     >
-                                        {expandedRow === r.id ? "Fermer" : "Voir détails"}
+                                        {isOpen ? "Fermer" : "Voir détails"}
                                     </button>
                                 </td>
                             </tr>
 
-                            {expandedRow === r.id && (
+                            {/* ZONE DÉPLIÉE */}
+                            {isOpen && (
                                 <tr>
-                                    <td colSpan="5" className="p-6 bg-gray-50 border-t border-b border-gray-200">
-                                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                                            <div className="p-3 bg-white border border-gray-200 rounded shadow-sm">
-                                                <p className="text-[10px] text-gray-400 font-bold uppercase">Nombre de questions</p>
-                                                <p className="text-xl font-bold">{r.qcm?.questions?.length || "?"}</p>
-                                            </div>
-                                            <div className="p-3 bg-white border border-gray-200 rounded shadow-sm border-l-4 border-l-green-500">
-                                                <p className="text-[10px] text-green-600 font-bold uppercase">Bonnes réponses</p>
-                                                <p className="text-xl font-bold">{r.score}</p>
-                                            </div>
-                                            <div className="p-3 bg-white border border-gray-200 rounded shadow-sm border-l-4 border-l-red-500">
-                                                <p className="text-[10px] text-red-600 font-bold uppercase">Mauvaises réponses</p>
-                                                <p className="text-xl font-bold">{(r.qcm?.questions?.length || 0) - r.score}</p>
-                                            </div>
-                                        </div>
+                                    <td colSpan="5" className="details-box">
+                                        <div className="details-inner">
 
-                                        <div className="bg-white p-4 border border-gray-200 rounded shadow-sm">
-                                            <h4 className="text-sm font-bold mb-4 flex items-center gap-2">📋 Détail des questions</h4>
-                                            <div className="space-y-2">
+                                            {/* CARTES STATS */}
+                                            <div className="stats-grid">
+                                                <div className="stat-card" style={{borderLeftColor: '#3b82f6'}}>
+                                                    <div className="stat-title" style={{color: '#3b82f6'}}>📝 Questions</div>
+                                                    <div className="stat-num">{totalQ}</div>
+                                                </div>
+                                                <div className="stat-card" style={{borderLeftColor: '#22c55e'}}>
+                                                    <div className="stat-title" style={{color: '#16a34a'}}>✅ Correctes</div>
+                                                    <div className="stat-num">{realScore}</div>
+                                                </div>
+                                                <div className="stat-card" style={{borderLeftColor: '#ef4444'}}>
+                                                    <div className="stat-title" style={{color: '#dc2626'}}>❌ Erreurs</div>
+                                                    <div className="stat-num">{totalQ - realScore}</div>
+                                                </div>
+                                            </div>
+
+                                            {/* LISTE QUESTIONS */}
+                                            <h4 style={{fontWeight: 'bold', marginBottom: '10px', color: '#374151'}}>📋 Détail des réponses</h4>
+                                            <div className="q-list">
                                                 {r.qcm?.questions?.map((q, idx) => (
-                                                    <div key={idx} className="flex justify-between items-center text-sm border-b border-gray-50 pb-2">
-                                                        <span className="text-gray-600">Question {idx + 1} : {q.text}</span>
-                                                        <span className="font-bold flex items-center gap-1">
-                                                                {idx < r.score ? <span className="text-green-600">✔️ Correcte</span> : <span className="text-red-500">❌ Incorrecte</span>}
+                                                    <div key={idx} className="q-item">
+                                                            <span style={{color: '#4b5563'}}>
+                                                                <span style={{fontWeight: 'bold', color: '#9ca3af', marginRight: '10px'}}>#{idx + 1}</span>
+                                                                {q.text}
                                                             </span>
+                                                        {idx < realScore ? (
+                                                            <span className="q-correct">CORRECTE</span>
+                                                        ) : (
+                                                            <span className="q-incorrect">INCORRECTE</span>
+                                                        )}
                                                     </div>
                                                 ))}
                                             </div>
+
+                                            <button className="btn-close" onClick={() => setExpandedRow(null)}>
+                                                Fermer les détails
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
                             )}
                         </React.Fragment>
-                    ))}
-                    </tbody>
-                </table>
-            </div>
+                    );
+                })}
+                </tbody>
+            </table>
         </div>
     );
 }

@@ -2,262 +2,86 @@
 @tailwind components;
 @tailwind utilities;
 
+/* --- BASE --- */
 body {
-    background-color: #ffffff;
+    background-color: #f8fafc;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
 }
 
-.title-login {
-    margin-top: 5%;
-    text-align: center;
-    color: #1e05f3;
-    font-family: 'Arial', sans-serif;
+/* --- LE FIX CRUCIAL --- */
+/* On s'assure que le layout principal n'est PAS en flex centré */
+#react-student-app {
+    display: block;
+    width: 100%;
 }
 
-.button_text {
-    text-align: center;
-}
-
-.container {
+/* --- SECTION LOGIN (Isolée) --- */
+.login-container {
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 100vh;
+    background-color: #f3f4f6;
 }
 
-.screen {
-    background: linear-gradient(90deg, #919191, #e8e8e8);
-    position: relative;
-    height: 600px;
-    width: 360px;
-    box-shadow: 0px 0px 24px #292929;
-    border-radius: 25px;
-}
+.title-login { margin-top: 5%; text-align: center; color: #1e05f3; font-family: 'Arial', sans-serif; }
+.screen { background: linear-gradient(90deg, #919191, #e8e8e8); position: relative; height: 600px; width: 360px; box-shadow: 0px 0px 24px #292929; border-radius: 25px; }
+.screen_content { z-index: 1; position: relative; height: 100%; }
+.screen__background { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; clip-path: inset(0 0 0 0); }
+.screen_background_shape { transform: rotate(45deg); position: absolute; }
+.screen_background_shape1 { height: 520px; width: 520px; background: #FFF; top: -50px; right: 120px; border-radius: 0 72px 0 0; }
+.screen_background_shape3 { height: 540px; width: 190px; background: linear-gradient(270deg, #d5d5d5, #2a1be4); top: -24px; right: 0; border-radius: 32px; }
+.login { width: 320px; padding: 30px; padding-top: 156px; }
+.login_input { border: none; border-bottom: 2px solid #D1D1D4; background: none; padding: 10px; padding-left: 24px; font-weight: 700; width: 75%; transition: .2s; outline: none; }
+.login_submit { background: #fff; font-size: 14px; margin-top: 30px; padding: 16px 20px; border-radius: 26px; border: 1px solid #D4D3E8; text-transform: uppercase; font-weight: 700; width: 100%; color: #130ad3; box-shadow: 0px 2px 2px #3a3a3a; cursor: pointer; transition: .2s; }
 
-.screen_content {
-    z-index: 1;
-    position: relative;
-    height: 100%;
-}
-
-.screen__background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 0;
-    clip-path: inset(0 0 0 0);
-}
-
-.screen_background_shape {
-    transform: rotate(45deg);
-    position: absolute;
-}
-
-.screen_background_shape1 {
-    height: 520px;
-    width: 520px;
-    background: #FFF;
-    top: -50px;
-    right: 120px;
-    border-radius: 0 72px 0 0;
-}
-
-.screen_background_shape3 {
-    height: 540px;
-    width: 190px;
-    background: linear-gradient(270deg, #d5d5d5, #2a1be4);
-    top: -24px;
-    right: 0;
-    border-radius: 32px;
-}
-
-.login {
-    width: 320px;
-    padding: 30px;
-    padding-top: 156px;
-}
-
-.login_field {
-    padding: 10px 0px;
-    position: relative;
-}
-
-.login_input {
-    border: none;
-    border-bottom: 2px solid #D1D1D4;
-    background: none;
-    padding: 10px;
-    padding-left: 24px;
-    font-weight: 700;
-    width: 75%;
-    transition: .2s;
-}
-
-.login__input:active,
-.login__input:focus,
-.login__input:hover {
-    outline: none;
-    border-bottom-color: #222222;
-}
-
-.login_submit {
-    background: #fff;
-    font-size: 14px;
-    margin-top: 30px;
-    padding: 16px 20px;
-    border-radius: 26px;
-    border: 1px solid #D4D3E8;
-    text-transform: uppercase;
-    font-weight: 700;
-    width: 100%;
-    color: #130ad3;
-    box-shadow: 0px 2px 2px #3a3a3a;
-    cursor: pointer;
-    transition: .2s;
-}
-
-.login__submit:active,
-.login__submit:focus,
-.login__submit:hover {
-    border-color: #3a3a3a;
-    outline: none;
-}
-
-.social-login {
-    position: absolute;
-    height: 140px;
-    width: 160px;
-    text-align: center;
-    bottom: 0px;
-    right: 0px;
-    color: #fff;
-}
-
-.header {
-    background-color: #ffffff;
-    text-align: center;
-    font-family: 'Arial', sans-serif;
-    padding: 10px 0;
-}
-
-.nav-to-header {
-    text-align: center;
-    color: #261f51;
-    font-family: 'Arial', sans-serif;
-    padding: 10px 0;
-    display: flex;
-    justify-content: space-between;
-}
-
-.timetable {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-.timetable th, .timetable td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-}
-
-.timetable th {
-    background-color: #007bff;
-    color: white;
-}
-
-.timetable tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.timetable tr:hover {
-    background-color: #f1f1f1;
-}
-
-.locked-card {
-    overflow: hidden;
-    position: relative;
-}
-
-.locked-card img,
-.locked-card .card-body {
-    filter: blur(4px);
-}
-
-.locked-card .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    pointer-events: none;
-}
-
-.locked-card .lock-icon {
-    font-size: 2rem;
-    color: white;
-    background: rgba(0,0,0,0.5);
-    padding: 10px;
-    border-radius: 50%;
-}
-
+/* --- ELEMENTS UI GLOBAUX --- */
 .student-card {
     background: white;
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    border: 1px solid #eee;
-    margin-bottom: 20px;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    border: 1px solid #e5e7eb;
+    margin-bottom: 24px;
 }
 
 .btn-primary {
     background-color: #1e05f3;
     color: white !important;
-    padding: 10px 20px;
+    padding: 8px 20px;
     border-radius: 8px;
-    text-decoration: none !important;
-    font-weight: bold;
+    font-weight: 600;
     display: inline-block;
     border: none;
     cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.2s;
 }
+.btn-primary:hover { opacity: 0.9; }
 
-.btn-secondary {
-    background-color: #f3f4f6;
-    color: #374151 !important;
-    padding: 10px 20px;
-    border-radius: 8px;
-    text-decoration: none !important;
-    font-weight: bold;
-    margin-right: 10px;
-    display: inline-block;
-}
-
-.badge-quiz {
-    background-color: #ede9fe;
-    color: #5b21b6;
-    padding: 4px 12px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: bold;
-    display: inline-block;
-}
-
-iframe {
-    width: 100%;
-    height: 600px;
+/* --- TABLEAU RÉSULTATS (Style Maquette) --- */
+.results-table-container {
+    background: white;
     border-radius: 12px;
-    border: 1px solid #e5e7eb;
-    margin-top: 15px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    margin-top: 20px;
+    width: 100%;
 }
 
-video {
-    width: 100%;
-    max-height: 500px;
-    border-radius: 12px;
-    background-color: #000;
-    margin-top: 15px;
-}
+.results-table { width: 100%; border-collapse: collapse; }
+.results-table thead { background-color: #1e05f3; }
+.results-table th { color: white; padding: 16px; text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; }
+.results-table td { padding: 16px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; color: #334155; }
+.results-table tr:hover { background-color: #f8fafc; }
+
+/* --- BADGES --- */
+.badge-pill { padding: 4px 12px; border-radius: 999px; font-size: 0.75rem; font-weight: 800; display: inline-block; }
+.badge-success { background-color: #dcfce7; color: #166534; }
+.badge-info { background-color: #dbeafe; color: #1e40af; }
+.badge-warning { background-color: #fef9c3; color: #854d0e; }
+.badge-danger { background-color: #fee2e2; color: #991b1b; }
